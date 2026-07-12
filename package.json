@@ -1,0 +1,29 @@
+{
+  "name": "clube",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "verify:infra": "node scripts/verify-infra.mjs"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "dotenv": "^16.4.5",
+    "pg": "^8.12.0",
+    "redis": "^4.7.0",
+    "turbo": "^2.1.3",
+    "typescript": "^5.5.4"
+  }
+}
