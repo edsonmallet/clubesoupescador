@@ -40,8 +40,9 @@ real ainda.
 - **TypeScript:** `tsconfig.base.json` na raiz, `strict: true`, estendido por todo pacote/app/serviço.
 - **Lint + format:** Biome (`biome.json` único na raiz) — substitui ESLint/Prettier em todos os projetos.
 - **Git:** repositório inicializado nesta fase; `.gitignore` cobre `node_modules`, `.env`, `.next`, `dist`, `.turbo`.
-- **docker-compose.yml:** apenas infraestrutura local — `postgres:16-alpine` e `redis:7-alpine`, com healthcheck, portas 5432 e 6379. Os apps rodam via `npm run dev` local, não em container; os `Dockerfile.*` (um por app/serviço) são para build de produção (Easypanel), preocupação separada do compose local.
-- **.env.example:** um na raiz agregando todas as variáveis das duas tabelas do CLAUDE.md (BFF/services e Next.js) com valores fictícios, e um `.env.example` por app/serviço com apenas as variáveis que ele usa.
+- **Postgres/Redis:** instâncias remotas já provisionadas (não local via docker-compose) — `DATABASE_URL` e `REDIS_URL` reais ficam só em `.env` na raiz (gitignorado, nunca commitado). Sem `docker-compose.yml` nesta fase: não há infraestrutura local pra subir. Os `Dockerfile.*` (um por app/serviço) continuam existindo, mas são só para build de produção (Easypanel).
+- **.env.example:** um na raiz agregando todas as variáveis das duas tabelas do CLAUDE.md (BFF/services e Next.js) com valores fictícios (incluindo `DATABASE_URL`/`REDIS_URL` fictícios), e um `.env.example` por app/serviço com apenas as variáveis que ele usa. O `.env` real (com as credenciais remotas) é criado localmente, fora do controle de versão.
+- **Schema por serviço:** a `DATABASE_URL` remota aponta para um único banco (`clubesoupescador`), sem `?schema=` na connection string. Cada serviço recebe o nome do seu schema Postgres (`subscriptions`, `store`, `cashback`, `raffles`, `tournaments`, `community`) como segundo argumento de `createDbClient(schema, connectionString)` — é o pacote `db-client` que aplica o schema certo, não a URL.
 
 ### Packages compartilhados (`packages/`)
 
@@ -83,7 +84,7 @@ que o CLAUDE.md não lista, mantendo os serviços desacoplados entre si.
 ### Critérios de verificação desta fase
 
 1. `npm install` na raiz completa sem erro.
-2. `docker-compose up -d` → Postgres e Redis saudáveis.
+2. Conexão com Postgres e Redis remotos (via `.env` local) confirmada por um smoke test de conexão.
 3. `npm run dev` sobe as 17 workspaces via Turborepo sem crash.
 4. `curl` nos 7 healthchecks (portas 3004–3010) retorna `{status:"ok"}`.
 5. As 4 páginas Next.js (portas 3000–3003) renderizam o placeholder.
