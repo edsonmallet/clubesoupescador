@@ -8,7 +8,9 @@ function guard(...allowedRoles: Role[]) {
   ): Promise<void> {
     const role = request.user?.role
     if (!role || !allowedRoles.includes(role)) {
-      reply.status(403).send({ error: { code: 'FORBIDDEN', message: 'Access denied' } })
+      reply
+        .status(403)
+        .send({ error: { code: 'FORBIDDEN', message: 'Access denied' } })
     }
   }
 }
@@ -17,7 +19,11 @@ export const requireSuperAdmin = guard('super_admin')
 
 export const requireOwner = guard('store_owner', 'super_admin')
 
-export const requireManager = guard('store_manager', 'store_owner', 'super_admin')
+export const requireManager = guard(
+  'store_manager',
+  'store_owner',
+  'super_admin',
+)
 
 export const requireSubscriber = guard(
   'subscriber',

@@ -32,7 +32,9 @@ export function createTenantAuthPreHandler(resolveTenant: ResolveTenant) {
 
     const tenant = await resolveTenant(domain)
     if (!tenant) {
-      reply.status(404).send({ error: { code: 'TENANT_NOT_FOUND', message: 'Tenant not found' } })
+      reply.status(404).send({
+        error: { code: 'TENANT_NOT_FOUND', message: 'Tenant not found' },
+      })
       return
     }
     request.tenant = tenant

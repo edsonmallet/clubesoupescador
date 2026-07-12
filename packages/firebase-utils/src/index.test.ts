@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 describe('firebase-utils bootstrap', () => {
   beforeEach(() => {
+    // biome-ignore lint/performance/noDelete: assigning undefined would coerce to the string "undefined" on process.env
     delete process.env.FIREBASE_SERVICE_ACCOUNT
   })
 

@@ -16,7 +16,9 @@ function isDomainError(error: unknown): error is DomainErrorShape {
   )
 }
 
-export async function registerErrorHandler(app: FastifyInstance): Promise<void> {
+export async function registerErrorHandler(
+  app: FastifyInstance,
+): Promise<void> {
   app.setErrorHandler((error: unknown, _request, reply) => {
     if (isDomainError(error)) {
       reply.status(error.statusCode).send({

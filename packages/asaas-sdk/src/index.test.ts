@@ -33,6 +33,8 @@ describe('AsaasClient', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const client = new AsaasClient('fake-key', 'production')
-    await expect(client.request('/customers')).rejects.toThrow('Asaas API error: 401 Unauthorized')
+    await expect(client.request('/customers')).rejects.toThrow(
+      'Asaas API error: 401 Unauthorized',
+    )
   })
 })

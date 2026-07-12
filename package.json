@@ -1,14 +1,11 @@
 {
   "name": "clube",
   "private": true,
+  "packageManager": "npm@10.8.2",
   "engines": {
     "node": ">=20"
   },
-  "workspaces": [
-    "apps/*",
-    "services/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "services/*", "packages/*"],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",

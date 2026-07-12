@@ -25,7 +25,9 @@ export class AsaasClient {
     })
 
     if (!response.ok) {
-      throw new Error(`Asaas API error: ${response.status} ${response.statusText}`)
+      throw new Error(
+        `Asaas API error: ${response.status} ${response.statusText}`,
+      )
     }
 
     return response.json() as Promise<T>

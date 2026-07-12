@@ -7,7 +7,11 @@ describe('registerErrorHandler', () => {
     const app = Fastify({ logger: false })
     await registerErrorHandler(app)
     app.get('/boom', async () => {
-      throw { code: 'OFFER_NOT_FOUND', statusCode: 404, message: 'Offer not found' }
+      throw {
+        code: 'OFFER_NOT_FOUND',
+        statusCode: 404,
+        message: 'Offer not found',
+      }
     })
 
     const response = await app.inject({ method: 'GET', url: '/boom' })
