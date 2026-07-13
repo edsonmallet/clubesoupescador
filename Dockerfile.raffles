@@ -22,6 +22,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/services/raffles/dist ./services/raffles/dist
 COPY --from=builder /app/services/raffles/package.json ./services/raffles/package.json
 EXPOSE 3008
