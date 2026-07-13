@@ -6,7 +6,9 @@
     "outDir": "dist",
     "rootDir": "src",
     "paths": {
-      "@t3-oss/env-core": ["./node_modules/@t3-oss/env-core/dist/index.d.ts"]
+      "@t3-oss/env-core/types": [
+        "./node_modules/@t3-oss/env-core/dist/index.d.ts"
+      ]
     }
   },
   "include": ["src"]
