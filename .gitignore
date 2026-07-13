@@ -8,3 +8,5 @@ dist/
 .DS_Store
 .worktrees/
 .superpowers/
+next-env.d.ts
+*.tsbuildinfo
