@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vitest run *)",
+      "Bash(npx tsc --noEmit*)",
+      "Bash(npm run typecheck --workspace=*)",
+      "Bash(npx biome check .)"
+    ]
+  }
+}
