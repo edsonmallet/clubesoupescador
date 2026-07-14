@@ -17,6 +17,13 @@
     }
   },
   "files": {
-    "ignore": ["node_modules", "dist", ".next", ".turbo"]
+    "ignore": [
+      "node_modules",
+      "dist",
+      ".next",
+      ".turbo",
+      ".expo",
+      "expo-env.d.ts"
+    ]
   }
 }
