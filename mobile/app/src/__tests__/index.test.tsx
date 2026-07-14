@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react-native'
 
-import Index from './index'
+import Index from '../app/index'
 
 describe('Index route', () => {
   it('renders the placeholder text', () => {
