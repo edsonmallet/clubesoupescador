@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=20"
   },
-  "workspaces": ["apps/*", "services/*", "packages/*"],
+  "workspaces": ["apps/*", "services/*", "packages/*", "mobile/*"],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
