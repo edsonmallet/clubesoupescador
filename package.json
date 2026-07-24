@@ -22,5 +22,8 @@
     "redis": "^4.7.0",
     "turbo": "^2.1.3",
     "typescript": "^5.5.4"
+  },
+  "overrides": {
+    "testcontainers": "12.0.1"
   }
 }
