@@ -27,8 +27,12 @@ export function createTenantAuthPreHandler(resolveTenant: ResolveTenant) {
     request: FastifyRequest,
     reply: FastifyReply,
   ): Promise<void> {
+    const slugHeader = request.headers['x-tenant-slug']
     const host = request.headers.host ?? ''
-    const domain = host.replace('www.', '').split(':')[0]
+    const domain =
+      typeof slugHeader === 'string' && slugHeader.length > 0
+        ? slugHeader
+        : host.replace('www.', '').split(':')[0]
 
     const tenant = await resolveTenant(domain)
     if (!tenant) {

@@ -69,4 +69,18 @@ describe('createTenantAuthPreHandler', () => {
       tenant_id: 'tenant-1',
     })
   })
+
+  it('prefers the x-tenant-slug header over the host domain', async () => {
+    const resolveTenant = vi.fn().mockResolvedValue({ id: '1', slug: 'dev' })
+    const preHandler = createTenantAuthPreHandler(resolveTenant)
+    const request = {
+      headers: { host: 'localhost:3004', 'x-tenant-slug': 'dev' },
+    } as unknown as FastifyRequest
+    const reply = createMockReply()
+
+    await preHandler(request, reply)
+
+    expect(resolveTenant).toHaveBeenCalledWith('dev')
+    expect(request.tenant).toEqual({ id: '1', slug: 'dev' })
+  })
 })
