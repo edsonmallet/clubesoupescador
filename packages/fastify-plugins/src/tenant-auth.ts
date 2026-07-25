@@ -27,10 +27,11 @@ export function createTenantAuthPreHandler(resolveTenant: ResolveTenant) {
     request: FastifyRequest,
     reply: FastifyReply,
   ): Promise<void> {
+    const allowSlugHeader = process.env.NODE_ENV !== 'production'
     const slugHeader = request.headers['x-tenant-slug']
     const host = request.headers.host ?? ''
     const domain =
-      typeof slugHeader === 'string' && slugHeader.length > 0
+      allowSlugHeader && typeof slugHeader === 'string' && slugHeader.length > 0
         ? slugHeader
         : host.replace('www.', '').split(':')[0]
 

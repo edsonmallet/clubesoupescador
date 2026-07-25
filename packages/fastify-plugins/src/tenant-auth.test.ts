@@ -83,4 +83,25 @@ describe('createTenantAuthPreHandler', () => {
     expect(resolveTenant).toHaveBeenCalledWith('dev')
     expect(request.tenant).toEqual({ id: '1', slug: 'dev' })
   })
+
+  it('ignores x-tenant-slug header when NODE_ENV is production', async () => {
+    const originalNodeEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'production'
+    try {
+      const resolveTenant = vi
+        .fn()
+        .mockResolvedValue({ id: '1', slug: 'soupescador' })
+      const preHandler = createTenantAuthPreHandler(resolveTenant)
+      const request = {
+        headers: { host: 'soupescador.clube.com.br', 'x-tenant-slug': 'dev' },
+      } as unknown as FastifyRequest
+      const reply = createMockReply()
+
+      await preHandler(request, reply)
+
+      expect(resolveTenant).toHaveBeenCalledWith('soupescador.clube.com.br')
+    } finally {
+      process.env.NODE_ENV = originalNodeEnv
+    }
+  })
 })

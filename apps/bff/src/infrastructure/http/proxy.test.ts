@@ -1,16 +1,21 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Tenant } from '../../domain/entities/tenant'
+import type { TenantStatus } from '../../domain/entities/tenant'
 import type { ITenantRepository } from '../../domain/interfaces/ITenantRepository'
 import { createResolveTenant } from './proxy'
 
-function fakeTenant(id: string, slug: string): Tenant {
+function fakeTenant(
+  id: string,
+  slug: string,
+  status: TenantStatus = 'active',
+): Tenant {
   return Tenant.create({
     id,
     slug,
     name: 'Fake Tenant',
     logoUrl: null,
     planId: null,
-    status: 'active',
+    status,
     ownerUid: 'owner-1',
     settings: {},
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
@@ -49,6 +54,19 @@ describe('createResolveTenant', () => {
 
     expect(tenant).toEqual({ id: 'tenant-1', slug: 'acme' })
     expect(repository.findBySlug).toHaveBeenCalledWith('acme')
+  })
+
+  it('treats a non-active tenant as not found', async () => {
+    const repository = fakeRepository({
+      findBySlug: vi
+        .fn()
+        .mockResolvedValue(fakeTenant('tenant-1', 'suspended-co', 'suspended')),
+    })
+    const resolveTenant = createResolveTenant(repository)
+
+    const tenant = await resolveTenant('suspended-co')
+
+    expect(tenant).toBeNull()
   })
 
   it('falls back to a custom domain lookup when no slug matches', async () => {
