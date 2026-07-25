@@ -44,12 +44,12 @@ services/subscriptions/
     shared/env.ts                                                   [modify: DATABASE_URL, REDIS_URL, ASAAS_*, FIREBASE_*]
     domain/
       entities/
-        Level.ts                                                    [new]
-        Level.test.ts                                                [new]
-        Plan.ts                                                      [new]
-        Plan.test.ts                                                 [new]
-        Subscription.ts                                              [new]
-        Subscription.test.ts                                         [new]
+        level.ts                                                    [new]
+        level.test.ts                                                [new]
+        plan.ts                                                      [new]
+        plan.test.ts                                                 [new]
+        subscription.ts                                              [new]
+        subscription.test.ts                                         [new]
       errors/
         index.ts                                                    [new: SubscriptionNotFoundError, PlanNotFoundError, SubscriptionAlreadyActiveError]
         index.test.ts                                                [new]
@@ -472,20 +472,20 @@ git commit -m "feat(asaas-sdk): add typed customer and subscription methods"
 ### Task 3: Domain entities — `Level`, `Plan`, `Subscription`
 
 **Files:**
-- Create: `services/subscriptions/src/domain/entities/Level.ts`, `Level.test.ts`
-- Create: `services/subscriptions/src/domain/entities/Plan.ts`, `Plan.test.ts`
-- Create: `services/subscriptions/src/domain/entities/Subscription.ts`, `Subscription.test.ts`
+- Create: `services/subscriptions/src/domain/entities/level.ts`, `level.test.ts`
+- Create: `services/subscriptions/src/domain/entities/plan.ts`, `plan.test.ts`
+- Create: `services/subscriptions/src/domain/entities/subscription.ts`, `subscription.test.ts`
 
 **Interfaces:**
 - Produces: `Level.create(props: LevelProps): Level` with getters `id, name, minXp, storeDiscountPct, cashbackPct`. `Plan.create(props: PlanProps): Plan` with getters `id, tenantId, name, priceCents, active, createdAt`. `Subscription.create(props: SubscriptionProps): Subscription` with getters `id, tenantId, uid, planId, asaasCustomerId, asaasSubscriptionId, status ('inactive'|'active'|'overdue'|'cancelled'), totalXp, levelId, createdAt, updatedAt`. Consumed by every repository/usecase task below.
 
 - [ ] **Step 1: Write the failing tests**
 
-Create `services/subscriptions/src/domain/entities/Level.test.ts`:
+Create `services/subscriptions/src/domain/entities/level.test.ts`:
 
 ```typescript
 import { describe, expect, it } from 'vitest'
-import { Level } from './Level'
+import { Level } from './level'
 
 describe('Level', () => {
   it('exposes all props via getters', () => {
@@ -506,11 +506,11 @@ describe('Level', () => {
 })
 ```
 
-Create `services/subscriptions/src/domain/entities/Plan.test.ts`:
+Create `services/subscriptions/src/domain/entities/plan.test.ts`:
 
 ```typescript
 import { describe, expect, it } from 'vitest'
-import { Plan } from './Plan'
+import { Plan } from './plan'
 
 describe('Plan', () => {
   it('exposes all props via getters', () => {
@@ -534,11 +534,11 @@ describe('Plan', () => {
 })
 ```
 
-Create `services/subscriptions/src/domain/entities/Subscription.test.ts`:
+Create `services/subscriptions/src/domain/entities/subscription.test.ts`:
 
 ```typescript
 import { describe, expect, it } from 'vitest'
-import { Subscription } from './Subscription'
+import { Subscription } from './subscription'
 
 describe('Subscription', () => {
   it('exposes all props via getters', () => {
@@ -580,7 +580,7 @@ Expected: FAIL — `./Level`, `./Plan`, `./Subscription` not found.
 
 - [ ] **Step 3: Implement the entities**
 
-Create `services/subscriptions/src/domain/entities/Level.ts`:
+Create `services/subscriptions/src/domain/entities/level.ts`:
 
 ```typescript
 export type LevelProps = {
@@ -620,7 +620,7 @@ export class Level {
 }
 ```
 
-Create `services/subscriptions/src/domain/entities/Plan.ts`:
+Create `services/subscriptions/src/domain/entities/plan.ts`:
 
 ```typescript
 export type PlanProps = {
@@ -665,7 +665,7 @@ export class Plan {
 }
 ```
 
-Create `services/subscriptions/src/domain/entities/Subscription.ts`:
+Create `services/subscriptions/src/domain/entities/subscription.ts`:
 
 ```typescript
 export type SubscriptionStatus = 'inactive' | 'active' | 'overdue' | 'cancelled'
@@ -862,7 +862,7 @@ No test — these are type-only interfaces (nothing to execute); the repository 
 Create `services/subscriptions/src/domain/interfaces/ILevelRepository.ts`:
 
 ```typescript
-import type { Level } from '../entities/Level'
+import type { Level } from '../entities/level'
 
 export interface ILevelRepository {
   findAll(): Promise<Level[]>
@@ -873,7 +873,7 @@ export interface ILevelRepository {
 Create `services/subscriptions/src/domain/interfaces/IPlanRepository.ts`:
 
 ```typescript
-import type { Plan } from '../entities/Plan'
+import type { Plan } from '../entities/plan'
 
 export interface IPlanRepository {
   findActiveByTenant(tenantId: string): Promise<Plan[]>
@@ -884,7 +884,7 @@ export interface IPlanRepository {
 Create `services/subscriptions/src/domain/interfaces/ISubscriptionRepository.ts`:
 
 ```typescript
-import type { Subscription, SubscriptionStatus } from '../entities/Subscription'
+import type { Subscription, SubscriptionStatus } from '../entities/subscription'
 
 export type CreateSubscriptionDto = {
   tenantId: string
@@ -1453,7 +1453,7 @@ Create `services/subscriptions/src/infrastructure/db/repositories/level.reposito
 ```typescript
 import { desc, lte } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { Level } from '../../../domain/entities/Level'
+import { Level } from '../../../domain/entities/level'
 import type { ILevelRepository } from '../../../domain/interfaces/ILevelRepository'
 import type { schema } from '../schema'
 import { levels } from '../schema/subscriptions'
@@ -1496,7 +1496,7 @@ Create `services/subscriptions/src/infrastructure/db/repositories/plan.repositor
 ```typescript
 import { and, eq } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { Plan } from '../../../domain/entities/Plan'
+import { Plan } from '../../../domain/entities/plan'
 import type { IPlanRepository } from '../../../domain/interfaces/IPlanRepository'
 import type { schema } from '../schema'
 import { plans } from '../schema/subscriptions'
@@ -1543,12 +1543,12 @@ Create `services/subscriptions/src/infrastructure/db/repositories/subscription.r
 ```typescript
 import { and, eq } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { Subscription } from '../../../domain/entities/Subscription'
+import { Subscription } from '../../../domain/entities/subscription'
 import type {
   CreateSubscriptionDto,
   ISubscriptionRepository,
 } from '../../../domain/interfaces/ISubscriptionRepository'
-import type { SubscriptionStatus } from '../../../domain/entities/Subscription'
+import type { SubscriptionStatus } from '../../../domain/entities/subscription'
 import type { schema } from '../schema'
 import { subscribers } from '../schema/subscriptions'
 
@@ -1725,7 +1725,7 @@ Create `services/subscriptions/src/application/subscriptions/list-plans.usecase.
 
 ```typescript
 import { describe, expect, it, vi } from 'vitest'
-import { Plan } from '../../domain/entities/Plan'
+import { Plan } from '../../domain/entities/plan'
 import { ListPlansUseCase } from './list-plans.usecase'
 
 describe('ListPlansUseCase', () => {
@@ -1759,7 +1759,7 @@ Expected: FAIL — `./list-plans.usecase` not found.
 Create `services/subscriptions/src/application/subscriptions/list-plans.usecase.ts`:
 
 ```typescript
-import type { Plan } from '../../domain/entities/Plan'
+import type { Plan } from '../../domain/entities/plan'
 import type { IPlanRepository } from '../../domain/interfaces/IPlanRepository'
 
 export type ListPlansInput = {
@@ -1807,8 +1807,8 @@ Create `services/subscriptions/src/application/xp/grant-xp.usecase.test.ts`:
 
 ```typescript
 import { describe, expect, it, vi } from 'vitest'
-import { Level } from '../../domain/entities/Level'
-import { Subscription } from '../../domain/entities/Subscription'
+import { Level } from '../../domain/entities/level'
+import { Subscription } from '../../domain/entities/subscription'
 import { SubscriptionNotFoundError } from '../../domain/errors'
 import { GrantXpUseCase } from './grant-xp.usecase'
 
@@ -1952,7 +1952,7 @@ In `services/subscriptions/src/infrastructure/db/repositories/subscription.repos
 Create `services/subscriptions/src/application/xp/grant-xp.usecase.ts`:
 
 ```typescript
-import type { Subscription } from '../../domain/entities/Subscription'
+import type { Subscription } from '../../domain/entities/subscription'
 import { SubscriptionNotFoundError } from '../../domain/errors'
 import type { ILevelRepository } from '../../domain/interfaces/ILevelRepository'
 import type { ISubscriptionRepository } from '../../domain/interfaces/ISubscriptionRepository'
@@ -2056,8 +2056,8 @@ Create `services/subscriptions/src/application/subscriptions/create-checkout.use
 
 ```typescript
 import { describe, expect, it, vi } from 'vitest'
-import { Plan } from '../../domain/entities/Plan'
-import { Subscription } from '../../domain/entities/Subscription'
+import { Plan } from '../../domain/entities/plan'
+import { Subscription } from '../../domain/entities/subscription'
 import {
   PlanNotFoundError,
   SubscriptionAlreadyActiveError,
