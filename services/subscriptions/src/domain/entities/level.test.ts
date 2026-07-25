@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Level } from './Level'
+import { Level } from './level'
 
 describe('Level', () => {
   it('exposes all props via getters', () => {

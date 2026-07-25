@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Plan } from './Plan'
+import { Plan } from './plan'
 
 describe('Plan', () => {
   it('exposes all props via getters', () => {
