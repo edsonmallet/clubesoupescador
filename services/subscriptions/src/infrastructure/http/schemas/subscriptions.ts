@@ -1,0 +1,20 @@
+import { Type } from '@sinclair/typebox'
+
+export const CreateCheckoutBodySchema = Type.Object({
+  planId: Type.String(),
+})
+
+export const CreateCheckoutResponseSchema = Type.Object({
+  paymentUrl: Type.Union([Type.String(), Type.Null()]),
+})
+
+export const MySubscriptionResponseSchema = Type.Union([
+  Type.Object({
+    id: Type.String(),
+    planId: Type.String(),
+    status: Type.String(),
+    totalXp: Type.Number(),
+    levelId: Type.Union([Type.String(), Type.Null()]),
+  }),
+  Type.Null(),
+])
