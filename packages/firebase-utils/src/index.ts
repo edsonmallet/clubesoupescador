@@ -4,7 +4,7 @@ import { getAuth } from 'firebase-admin/auth'
 
 export type { Role }
 
-function getFirebaseApp(): App {
+export function getFirebaseApp(): App {
   const existing = getApps()[0]
   if (existing) return existing
 

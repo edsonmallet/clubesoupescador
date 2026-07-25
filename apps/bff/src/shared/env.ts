@@ -32,6 +32,8 @@ export const env = createEnv({
       .enum(['development', 'production', 'test'])
       .default('development'),
     DATABASE_URL: z.string().min(1),
+    FIREBASE_PROJECT_ID: z.string().min(1),
+    FIREBASE_SERVICE_ACCOUNT: z.string().min(1),
   },
   runtimeEnv: process.env,
 })

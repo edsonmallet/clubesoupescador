@@ -13,6 +13,9 @@
   "dependencies": {
     "@clube/db-client": "*",
     "@clube/fastify-plugins": "*",
+    "@clube/firebase-utils": "*",
+    "@clube/shared-types": "*",
+    "@sinclair/typebox": "^0.32.35",
     "@t3-oss/env-core": "^0.11.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
