@@ -26,7 +26,10 @@ export async function registerPlansRoutes(
       const tenantId = request.headers['x-tenant-id']
       if (typeof tenantId !== 'string') {
         reply.status(400).send({
-          error: { code: 'MISSING_TENANT', message: 'x-tenant-id header is required' },
+          error: {
+            code: 'MISSING_TENANT',
+            message: 'x-tenant-id header is required',
+          },
         })
         return
       }

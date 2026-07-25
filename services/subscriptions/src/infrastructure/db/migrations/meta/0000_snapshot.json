@@ -222,12 +222,8 @@
           "tableFrom": "subscribers",
           "tableTo": "plans",
           "schemaTo": "subscriptions",
-          "columnsFrom": [
-            "plan_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["plan_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -236,12 +232,8 @@
           "tableFrom": "subscribers",
           "tableTo": "levels",
           "schemaTo": "subscriptions",
-          "columnsFrom": [
-            "level_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["level_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -299,12 +291,8 @@
           "tableFrom": "xp_events",
           "tableTo": "subscribers",
           "schemaTo": "subscriptions",
-          "columnsFrom": [
-            "subscriber_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["subscriber_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -317,12 +305,7 @@
     "subscriptions.subscription_status": {
       "name": "subscription_status",
       "schema": "subscriptions",
-      "values": [
-        "inactive",
-        "active",
-        "overdue",
-        "cancelled"
-      ]
+      "values": ["inactive", "active", "overdue", "cancelled"]
     }
   },
   "schemas": {

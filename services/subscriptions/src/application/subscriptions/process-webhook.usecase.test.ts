@@ -1,16 +1,24 @@
-import { setRole } from '@clube/firebase-utils'
 import { createDbClient } from '@clube/db-client'
+import { setRole } from '@clube/firebase-utils'
 import {
   PostgreSqlContainer,
   type StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { schema } from '../../infrastructure/db/schema'
-import { levels, plans } from '../../infrastructure/db/schema/subscriptions'
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest'
 import { LevelRepository } from '../../infrastructure/db/repositories/level.repository'
 import { SubscriptionRepository } from '../../infrastructure/db/repositories/subscription.repository'
+import { schema } from '../../infrastructure/db/schema'
+import { levels, plans } from '../../infrastructure/db/schema/subscriptions'
 import { GrantXpUseCase } from '../xp/grant-xp.usecase'
 import { ProcessWebhookUseCase } from './process-webhook.usecase'
 
@@ -37,13 +45,21 @@ describe('ProcessWebhookUseCase', () => {
 
     const [plan] = await db
       .insert(plans)
-      .values({ tenantId: TENANT_ID, name: 'Plano', priceCents: 1990, active: true })
+      .values({
+        tenantId: TENANT_ID,
+        name: 'Plano',
+        priceCents: 1990,
+        active: true,
+      })
       .returning({ id: plans.id })
     planId = plan.id
 
-    await db
-      .insert(levels)
-      .values({ name: 'Bronze', minXp: 0, storeDiscountPct: '5', cashbackPct: '3' })
+    await db.insert(levels).values({
+      name: 'Bronze',
+      minXp: 0,
+      storeDiscountPct: '5',
+      cashbackPct: '3',
+    })
   }, 60_000)
 
   afterAll(async () => {
@@ -84,7 +100,11 @@ describe('ProcessWebhookUseCase', () => {
     const updated = await subscriptionRepository.findById(created.id)
     expect(updated?.status).toBe('active')
     expect(updated?.totalXp).toBe(50)
-    expect(setRole).toHaveBeenCalledWith('uid-confirmed', 'subscriber', TENANT_ID)
+    expect(setRole).toHaveBeenCalledWith(
+      'uid-confirmed',
+      'subscriber',
+      TENANT_ID,
+    )
   })
 
   it('marks the subscriber overdue and revokes the role on PAYMENT_OVERDUE', async () => {

@@ -41,7 +41,9 @@ describe('AsaasClient', () => {
   it('finds a customer by externalReference', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ data: [{ id: 'cus_1', externalReference: 'uid-1' }] }),
+      json: async () => ({
+        data: [{ id: 'cus_1', externalReference: 'uid-1' }],
+      }),
     })
     vi.stubGlobal('fetch', fetchMock)
 

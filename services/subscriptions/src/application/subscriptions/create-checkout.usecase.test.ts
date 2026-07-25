@@ -40,7 +40,10 @@ function makeSubscription(
 
 describe('CreateCheckoutUseCase', () => {
   it('throws PlanNotFoundError when the plan does not exist for the tenant', async () => {
-    const planRepository = { findActiveByTenant: vi.fn(), findById: vi.fn().mockResolvedValue(null) }
+    const planRepository = {
+      findActiveByTenant: vi.fn(),
+      findById: vi.fn().mockResolvedValue(null),
+    }
     const subscriptionRepository = {
       findByUid: vi.fn(),
       findByAsaasSubscriptionId: vi.fn(),
@@ -72,7 +75,9 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn().mockResolvedValue(makePlan()),
     }
     const subscriptionRepository = {
-      findByUid: vi.fn().mockResolvedValue(makeSubscription({ status: 'active' })),
+      findByUid: vi
+        .fn()
+        .mockResolvedValue(makeSubscription({ status: 'active' })),
       findByAsaasSubscriptionId: vi.fn(),
       findById: vi.fn(),
       create: vi.fn(),
@@ -112,9 +117,11 @@ describe('CreateCheckoutUseCase', () => {
     const asaasClient = {
       findCustomerByExternalReference: vi.fn().mockResolvedValue(null),
       createCustomer: vi.fn().mockResolvedValue({ id: 'cus_1' }),
-      createSubscription: vi
-        .fn()
-        .mockResolvedValue({ id: 'asub_1', status: 'PENDING', paymentLink: 'https://pay.asaas.com/x' }),
+      createSubscription: vi.fn().mockResolvedValue({
+        id: 'asub_1',
+        status: 'PENDING',
+        paymentLink: 'https://pay.asaas.com/x',
+      }),
     }
 
     const usecase = new CreateCheckoutUseCase(
@@ -133,7 +140,11 @@ describe('CreateCheckoutUseCase', () => {
       expect.objectContaining({ externalReference: 'uid-1' }),
     )
     expect(asaasClient.createSubscription).toHaveBeenCalledWith(
-      expect.objectContaining({ customer: 'cus_1', value: 19.9, cycle: 'MONTHLY' }),
+      expect.objectContaining({
+        customer: 'cus_1',
+        value: 19.9,
+        cycle: 'MONTHLY',
+      }),
     )
     expect(subscriptionRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -177,7 +188,11 @@ describe('CreateCheckoutUseCase', () => {
       asaasClient as never,
     )
 
-    await usecase.execute({ uid: 'uid-1', tenantId: 'tenant-1', planId: 'plan-1' })
+    await usecase.execute({
+      uid: 'uid-1',
+      tenantId: 'tenant-1',
+      planId: 'plan-1',
+    })
 
     expect(asaasClient.createCustomer).not.toHaveBeenCalled()
     expect(asaasClient.createSubscription).toHaveBeenCalledWith(

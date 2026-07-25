@@ -3,7 +3,11 @@ import type { ISubscriptionRepository } from '../../domain/interfaces/ISubscript
 import type { GrantXpUseCase } from '../xp/grant-xp.usecase'
 
 export type AsaasWebhookEvent = {
-  event: 'PAYMENT_CONFIRMED' | 'PAYMENT_OVERDUE' | 'SUBSCRIPTION_CANCELLED' | string
+  event:
+    | 'PAYMENT_CONFIRMED'
+    | 'PAYMENT_OVERDUE'
+    | 'SUBSCRIPTION_CANCELLED'
+    | string
   payment: {
     subscription: string
   }
@@ -18,14 +22,18 @@ export class ProcessWebhookUseCase {
   ) {}
 
   async execute(event: AsaasWebhookEvent): Promise<void> {
-    const subscription = await this.subscriptionRepository.findByAsaasSubscriptionId(
-      event.payment.subscription,
-    )
+    const subscription =
+      await this.subscriptionRepository.findByAsaasSubscriptionId(
+        event.payment.subscription,
+      )
     if (!subscription) return
 
     switch (event.event) {
       case 'PAYMENT_CONFIRMED': {
-        await this.subscriptionRepository.updateStatus(subscription.id, 'active')
+        await this.subscriptionRepository.updateStatus(
+          subscription.id,
+          'active',
+        )
         await setRole(subscription.uid, 'subscriber', subscription.tenantId)
         await this.grantXpUseCase.execute({
           subscriptionId: subscription.id,
@@ -36,12 +44,18 @@ export class ProcessWebhookUseCase {
         return
       }
       case 'PAYMENT_OVERDUE': {
-        await this.subscriptionRepository.updateStatus(subscription.id, 'overdue')
+        await this.subscriptionRepository.updateStatus(
+          subscription.id,
+          'overdue',
+        )
         await revokeRole(subscription.uid)
         return
       }
       case 'SUBSCRIPTION_CANCELLED': {
-        await this.subscriptionRepository.updateStatus(subscription.id, 'cancelled')
+        await this.subscriptionRepository.updateStatus(
+          subscription.id,
+          'cancelled',
+        )
         await revokeRole(subscription.uid)
         return
       }

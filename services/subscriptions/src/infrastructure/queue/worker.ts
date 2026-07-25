@@ -1,6 +1,6 @@
 import { Worker } from 'bullmq'
-import { env } from '../../shared/env'
 import type { ProcessWebhookUseCase } from '../../application/subscriptions/process-webhook.usecase'
+import { env } from '../../shared/env'
 import { SUBSCRIPTIONS_QUEUE_NAME } from './subscriptions.queue'
 
 export function startSubscriptionsWorker(
