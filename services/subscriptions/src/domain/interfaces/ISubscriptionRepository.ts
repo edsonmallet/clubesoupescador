@@ -9,6 +9,13 @@ export type CreateSubscriptionDto = {
   status: SubscriptionStatus
 }
 
+export type UpdateAsaasDetailsDto = {
+  planId: string
+  asaasCustomerId: string | null
+  asaasSubscriptionId: string | null
+  status: SubscriptionStatus
+}
+
 export interface ISubscriptionRepository {
   findByUid(uid: string, tenantId: string): Promise<Subscription | null>
   findByAsaasSubscriptionId(
@@ -17,6 +24,10 @@ export interface ISubscriptionRepository {
   findById(id: string): Promise<Subscription | null>
   create(data: CreateSubscriptionDto): Promise<Subscription>
   updateStatus(id: string, status: SubscriptionStatus): Promise<Subscription>
+  updateAsaasDetails(
+    id: string,
+    data: UpdateAsaasDetailsDto,
+  ): Promise<Subscription>
   updateXp(
     id: string,
     totalXp: number,

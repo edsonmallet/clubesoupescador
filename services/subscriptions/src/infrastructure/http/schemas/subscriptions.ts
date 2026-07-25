@@ -2,6 +2,8 @@ import { Type } from '@sinclair/typebox'
 
 export const CreateCheckoutBodySchema = Type.Object({
   planId: Type.String(),
+  name: Type.String({ minLength: 1 }),
+  cpfCnpj: Type.String({ minLength: 11 }),
 })
 
 export const CreateCheckoutResponseSchema = Type.Object({

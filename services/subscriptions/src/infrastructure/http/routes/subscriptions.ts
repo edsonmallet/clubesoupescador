@@ -30,12 +30,18 @@ export async function registerSubscriptionsRoutes(
     },
     async (request, reply) => {
       const user = request.user as AuthenticatedUser
-      const { planId } = request.body as { planId: string }
+      const { planId, name, cpfCnpj } = request.body as {
+        planId: string
+        name: string
+        cpfCnpj: string
+      }
 
       const result = await deps.createCheckoutUseCase.execute({
         uid: user.uid,
         tenantId: user.tenant_id as string,
         planId,
+        name,
+        cpfCnpj,
       })
 
       reply.status(200).send(result)

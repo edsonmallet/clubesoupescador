@@ -5,6 +5,7 @@ import type { SubscriptionStatus } from '../../../domain/entities/subscription'
 import type {
   CreateSubscriptionDto,
   ISubscriptionRepository,
+  UpdateAsaasDetailsDto,
 } from '../../../domain/interfaces/ISubscriptionRepository'
 import type { schema } from '../schema'
 import { subscribers } from '../schema/subscriptions'
@@ -85,6 +86,25 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     const [row] = await this.db
       .update(subscribers)
       .set({ status, updatedAt: new Date() })
+      .where(eq(subscribers.id, id))
+      .returning()
+
+    return toDomain(row as SubscriberRow)
+  }
+
+  async updateAsaasDetails(
+    id: string,
+    data: UpdateAsaasDetailsDto,
+  ): Promise<Subscription> {
+    const [row] = await this.db
+      .update(subscribers)
+      .set({
+        planId: data.planId,
+        asaasCustomerId: data.asaasCustomerId,
+        asaasSubscriptionId: data.asaasSubscriptionId,
+        status: data.status,
+        updatedAt: new Date(),
+      })
       .where(eq(subscribers.id, id))
       .returning()
 

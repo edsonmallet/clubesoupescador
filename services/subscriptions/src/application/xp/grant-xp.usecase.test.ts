@@ -27,6 +27,7 @@ describe('GrantXpUseCase', () => {
       findByAsaasSubscriptionId: vi.fn(),
       create: vi.fn(),
       updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
       updateXp: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
     }
@@ -72,6 +73,7 @@ describe('GrantXpUseCase', () => {
       findByAsaasSubscriptionId: vi.fn(),
       create: vi.fn(),
       updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
       updateXp: vi.fn().mockResolvedValue(updated),
       findById: vi.fn().mockResolvedValue(subscription),
     }

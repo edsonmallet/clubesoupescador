@@ -87,6 +87,31 @@ describe('SubscriptionRepository', () => {
     expect(updated.status).toBe('active')
   })
 
+  it('replaces Asaas details in place on a re-checkout without violating the uid+tenant unique index', async () => {
+    const created = await repository.create({
+      tenantId: TENANT_ID,
+      uid: 'uid-retry',
+      planId,
+      asaasCustomerId: 'cus_retry',
+      asaasSubscriptionId: 'asub_retry_old',
+      status: 'cancelled',
+    })
+
+    const updated = await repository.updateAsaasDetails(created.id, {
+      planId,
+      asaasCustomerId: 'cus_retry',
+      asaasSubscriptionId: 'asub_retry_new',
+      status: 'inactive',
+    })
+
+    expect(updated.id).toBe(created.id)
+    expect(updated.asaasSubscriptionId).toBe('asub_retry_new')
+    expect(updated.status).toBe('inactive')
+    expect(await repository.findByAsaasSubscriptionId('asub_retry_old')).toBe(
+      null,
+    )
+  })
+
   it('updates XP and level', async () => {
     const created = await repository.create({
       tenantId: TENANT_ID,

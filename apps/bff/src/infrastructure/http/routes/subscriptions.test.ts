@@ -70,7 +70,11 @@ describe('subscriptions proxy routes', () => {
       method: 'POST',
       url: '/v1/subscriptions/checkout',
       headers: { authorization: 'Bearer token-123' },
-      payload: { planId: 'plan-1' },
+      payload: {
+        planId: 'plan-1',
+        name: 'Maria Souza',
+        cpfCnpj: '12345678909',
+      },
     })
 
     expect(fetchMock).toHaveBeenCalledWith(
@@ -81,7 +85,11 @@ describe('subscriptions proxy routes', () => {
           authorization: 'Bearer token-123',
           'content-type': 'application/json',
         }),
-        body: JSON.stringify({ planId: 'plan-1' }),
+        body: JSON.stringify({
+          planId: 'plan-1',
+          name: 'Maria Souza',
+          cpfCnpj: '12345678909',
+        }),
       }),
     )
     expect(response.statusCode).toBe(200)

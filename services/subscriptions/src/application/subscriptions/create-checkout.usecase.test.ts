@@ -50,12 +50,14 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn(),
       create: vi.fn(),
       updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
       updateXp: vi.fn(),
     }
     const asaasClient = {
       findCustomerByExternalReference: vi.fn(),
       createCustomer: vi.fn(),
       createSubscription: vi.fn(),
+      listPaymentsBySubscription: vi.fn().mockResolvedValue({ data: [] }),
     }
 
     const usecase = new CreateCheckoutUseCase(
@@ -65,7 +67,13 @@ describe('CreateCheckoutUseCase', () => {
     )
 
     await expect(
-      usecase.execute({ uid: 'uid-1', tenantId: 'tenant-1', planId: 'plan-1' }),
+      usecase.execute({
+        uid: 'uid-1',
+        tenantId: 'tenant-1',
+        planId: 'plan-1',
+        name: 'Maria Souza',
+        cpfCnpj: '12345678909',
+      }),
     ).rejects.toThrow(PlanNotFoundError)
   })
 
@@ -82,12 +90,14 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn(),
       create: vi.fn(),
       updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
       updateXp: vi.fn(),
     }
     const asaasClient = {
       findCustomerByExternalReference: vi.fn(),
       createCustomer: vi.fn(),
       createSubscription: vi.fn(),
+      listPaymentsBySubscription: vi.fn().mockResolvedValue({ data: [] }),
     }
 
     const usecase = new CreateCheckoutUseCase(
@@ -97,7 +107,13 @@ describe('CreateCheckoutUseCase', () => {
     )
 
     await expect(
-      usecase.execute({ uid: 'uid-1', tenantId: 'tenant-1', planId: 'plan-1' }),
+      usecase.execute({
+        uid: 'uid-1',
+        tenantId: 'tenant-1',
+        planId: 'plan-1',
+        name: 'Maria Souza',
+        cpfCnpj: '12345678909',
+      }),
     ).rejects.toThrow(SubscriptionAlreadyActiveError)
   })
 
@@ -112,6 +128,7 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn(),
       create: vi.fn().mockResolvedValue(makeSubscription()),
       updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
       updateXp: vi.fn(),
     }
     const asaasClient = {
@@ -120,7 +137,9 @@ describe('CreateCheckoutUseCase', () => {
       createSubscription: vi.fn().mockResolvedValue({
         id: 'asub_1',
         status: 'PENDING',
-        paymentLink: 'https://pay.asaas.com/x',
+      }),
+      listPaymentsBySubscription: vi.fn().mockResolvedValue({
+        data: [{ id: 'pay_1', invoiceUrl: 'https://pay.asaas.com/x' }],
       }),
     }
 
@@ -134,11 +153,15 @@ describe('CreateCheckoutUseCase', () => {
       uid: 'uid-1',
       tenantId: 'tenant-1',
       planId: 'plan-1',
+      name: 'Maria Souza',
+      cpfCnpj: '12345678909',
     })
 
-    expect(asaasClient.createCustomer).toHaveBeenCalledWith(
-      expect.objectContaining({ externalReference: 'uid-1' }),
-    )
+    expect(asaasClient.createCustomer).toHaveBeenCalledWith({
+      name: 'Maria Souza',
+      cpfCnpj: '12345678909',
+      externalReference: 'uid-1',
+    })
     expect(asaasClient.createSubscription).toHaveBeenCalledWith(
       expect.objectContaining({
         customer: 'cus_1',
@@ -156,6 +179,9 @@ describe('CreateCheckoutUseCase', () => {
         status: 'inactive',
       }),
     )
+    expect(asaasClient.listPaymentsBySubscription).toHaveBeenCalledWith(
+      'asub_1',
+    )
     expect(result).toEqual({ paymentUrl: 'https://pay.asaas.com/x' })
   })
 
@@ -170,6 +196,7 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn(),
       create: vi.fn().mockResolvedValue(makeSubscription()),
       updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
       updateXp: vi.fn(),
     }
     const asaasClient = {
@@ -180,6 +207,7 @@ describe('CreateCheckoutUseCase', () => {
       createSubscription: vi
         .fn()
         .mockResolvedValue({ id: 'asub_1', status: 'PENDING' }),
+      listPaymentsBySubscription: vi.fn().mockResolvedValue({ data: [] }),
     }
 
     const usecase = new CreateCheckoutUseCase(
@@ -192,6 +220,8 @@ describe('CreateCheckoutUseCase', () => {
       uid: 'uid-1',
       tenantId: 'tenant-1',
       planId: 'plan-1',
+      name: 'Maria Souza',
+      cpfCnpj: '12345678909',
     })
 
     expect(asaasClient.createCustomer).not.toHaveBeenCalled()
@@ -199,4 +229,112 @@ describe('CreateCheckoutUseCase', () => {
       expect.objectContaining({ customer: 'cus_existing' }),
     )
   })
+
+  it('returns a null paymentUrl when Asaas has not generated a payment yet', async () => {
+    const planRepository = {
+      findActiveByTenant: vi.fn(),
+      findById: vi.fn().mockResolvedValue(makePlan()),
+    }
+    const subscriptionRepository = {
+      findByUid: vi.fn().mockResolvedValue(null),
+      findByAsaasSubscriptionId: vi.fn(),
+      findById: vi.fn(),
+      create: vi.fn().mockResolvedValue(makeSubscription()),
+      updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
+      updateXp: vi.fn(),
+    }
+    const asaasClient = {
+      findCustomerByExternalReference: vi.fn().mockResolvedValue({ id: 'c1' }),
+      createCustomer: vi.fn(),
+      createSubscription: vi
+        .fn()
+        .mockResolvedValue({ id: 'asub_1', status: 'PENDING' }),
+      listPaymentsBySubscription: vi.fn().mockResolvedValue({ data: [] }),
+    }
+
+    const usecase = new CreateCheckoutUseCase(
+      subscriptionRepository,
+      planRepository,
+      asaasClient as never,
+    )
+
+    const result = await usecase.execute({
+      uid: 'uid-1',
+      tenantId: 'tenant-1',
+      planId: 'plan-1',
+      name: 'Maria Souza',
+      cpfCnpj: '12345678909',
+    })
+
+    expect(result).toEqual({ paymentUrl: null })
+  })
+
+  it.each(['inactive', 'overdue', 'cancelled'] as const)(
+    'updates the existing %s subscriber in place instead of inserting a duplicate',
+    async (status) => {
+      const planRepository = {
+        findActiveByTenant: vi.fn(),
+        findById: vi.fn().mockResolvedValue(makePlan()),
+      }
+      const subscriptionRepository = {
+        findByUid: vi.fn().mockResolvedValue(
+          makeSubscription({
+            status,
+            asaasCustomerId: 'cus_prior',
+            asaasSubscriptionId: 'asub_old',
+          }),
+        ),
+        findByAsaasSubscriptionId: vi.fn(),
+        findById: vi.fn(),
+        create: vi.fn(),
+        updateStatus: vi.fn(),
+        updateAsaasDetails: vi.fn().mockResolvedValue(makeSubscription()),
+        updateXp: vi.fn(),
+      }
+      const asaasClient = {
+        findCustomerByExternalReference: vi.fn(),
+        createCustomer: vi.fn(),
+        createSubscription: vi
+          .fn()
+          .mockResolvedValue({ id: 'asub_new', status: 'PENDING' }),
+        listPaymentsBySubscription: vi.fn().mockResolvedValue({
+          data: [{ id: 'pay_1', invoiceUrl: 'https://pay.asaas.com/new' }],
+        }),
+      }
+
+      const usecase = new CreateCheckoutUseCase(
+        subscriptionRepository,
+        planRepository,
+        asaasClient as never,
+      )
+
+      const result = await usecase.execute({
+        uid: 'uid-1',
+        tenantId: 'tenant-1',
+        planId: 'plan-1',
+        name: 'Maria Souza',
+        cpfCnpj: '12345678909',
+      })
+
+      // Never inserts again — that would violate subscribers_uid_tenant_idx.
+      expect(subscriptionRepository.create).not.toHaveBeenCalled()
+      // Reuses the stored Asaas customer, no lookup/create round-trip.
+      expect(asaasClient.findCustomerByExternalReference).not.toHaveBeenCalled()
+      expect(asaasClient.createCustomer).not.toHaveBeenCalled()
+      expect(asaasClient.createSubscription).toHaveBeenCalledWith(
+        expect.objectContaining({ customer: 'cus_prior' }),
+      )
+      expect(subscriptionRepository.updateAsaasDetails).toHaveBeenCalledWith(
+        'sub-1',
+        {
+          planId: 'plan-1',
+          asaasCustomerId: 'cus_prior',
+          asaasSubscriptionId: 'asub_new',
+          status: 'inactive',
+        },
+      )
+      expect(result).toEqual({ paymentUrl: 'https://pay.asaas.com/new' })
+    },
+  )
 })
