@@ -18,10 +18,7 @@ export class GetMeUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async execute(input: GetMeInput): Promise<GetMeResult> {
-    const user = await this.userRepository.findByUid(
-      input.uid,
-      input.tenantId,
-    )
+    const user = await this.userRepository.findByUid(input.uid, input.tenantId)
 
     return {
       uid: input.uid,

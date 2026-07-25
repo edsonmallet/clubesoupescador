@@ -83,9 +83,7 @@ export const domains = tenantsSchema.table(
 export const users = tenantsSchema.table(
   'users',
   {
-    id: uuid('id')
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
     tenantId: uuid('tenant_id')
       .notNull()
       .references(() => tenants.id),

@@ -1,3 +1,4 @@
+import type { AuthenticatedUser, Tenant } from '@clube/fastify-plugins'
 import type { FastifyInstance, preHandlerHookHandler } from 'fastify'
 import type { GetMeUseCase } from '../../../application/tenants/get-me.usecase'
 import type { RegisterUserUseCase } from '../../../application/tenants/register-user.usecase'
@@ -21,17 +22,20 @@ export async function registerAuthRoutes(
       schema: { response: { 200: RegisterUserResponseSchema } },
     },
     async (request, reply) => {
-      const user = await deps.registerUserUseCase.execute({
-        uid: request.user!.uid,
-        tenantId: request.tenant!.id,
+      const user = request.user as AuthenticatedUser
+      const tenant = request.tenant as Tenant
+
+      const createdUser = await deps.registerUserUseCase.execute({
+        uid: user.uid,
+        tenantId: tenant.id,
       })
 
       reply.status(200).send({
-        id: user.id,
-        tenantId: user.tenantId,
-        uid: user.uid,
-        role: user.role,
-        createdAt: user.createdAt.toISOString(),
+        id: createdUser.id,
+        tenantId: createdUser.tenantId,
+        uid: createdUser.uid,
+        role: createdUser.role,
+        createdAt: createdUser.createdAt.toISOString(),
       })
     },
   )
@@ -43,10 +47,13 @@ export async function registerAuthRoutes(
       schema: { response: { 200: MeResponseSchema } },
     },
     async (request, reply) => {
+      const user = request.user as AuthenticatedUser
+      const tenant = request.tenant as Tenant
+
       const result = await deps.getMeUseCase.execute({
-        uid: request.user!.uid,
-        tenantId: request.tenant!.id,
-        role: request.user!.role,
+        uid: user.uid,
+        tenantId: tenant.id,
+        role: user.role,
       })
 
       reply.status(200).send({

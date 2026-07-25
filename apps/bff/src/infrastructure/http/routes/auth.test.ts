@@ -11,7 +11,11 @@ function buildTestApp(overrides: Partial<AuthRouteDeps> = {}) {
       request.tenant = { id: 'tenant-1', slug: 'dev' }
     },
     requireAuth: async (request: FastifyRequest) => {
-      request.user = { uid: 'firebase-uid-1', role: 'user', tenant_id: 'tenant-1' }
+      request.user = {
+        uid: 'firebase-uid-1',
+        role: 'user',
+        tenant_id: 'tenant-1',
+      }
     },
     registerUserUseCase: {
       execute: vi.fn().mockResolvedValue({
@@ -40,7 +44,10 @@ describe('auth routes', () => {
     const { app, deps } = buildTestApp()
     await registerAuthRoutes(app, deps)
 
-    const response = await app.inject({ method: 'POST', url: '/v1/auth/register' })
+    const response = await app.inject({
+      method: 'POST',
+      url: '/v1/auth/register',
+    })
 
     expect(response.statusCode).toBe(200)
     expect(response.json()).toEqual({
@@ -80,7 +87,10 @@ describe('auth routes', () => {
     const { app, deps } = buildTestApp({
       requireAuth: async (_request, reply) => {
         reply.status(401).send({
-          error: { code: 'UNAUTHENTICATED', message: 'Authentication required' },
+          error: {
+            code: 'UNAUTHENTICATED',
+            message: 'Authentication required',
+          },
         })
       },
     })
