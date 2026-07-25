@@ -12,7 +12,10 @@ describe('ListPlansUseCase', () => {
       active: true,
       createdAt: new Date(),
     })
-    const planRepository = { findActiveByTenant: vi.fn().mockResolvedValue([plan]) }
+    const planRepository = {
+      findActiveByTenant: vi.fn().mockResolvedValue([plan]),
+      findById: vi.fn(),
+    }
 
     const usecase = new ListPlansUseCase(planRepository)
     const result = await usecase.execute({ tenantId: 'tenant-1' })
