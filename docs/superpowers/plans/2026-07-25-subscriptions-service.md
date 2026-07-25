@@ -1049,6 +1049,7 @@ Create `services/subscriptions/src/infrastructure/db/schema/subscriptions.ts`:
 ```typescript
 import { sql } from 'drizzle-orm'
 import {
+  boolean,
   integer,
   numeric,
   pgSchema,
@@ -1084,7 +1085,7 @@ export const plans = subscriptionsSchema.table('plans', {
   tenantId: uuid('tenant_id').notNull(),
   name: text('name').notNull(),
   priceCents: integer('price_cents').notNull(),
-  active: text('active').notNull().default('true'),
+  active: boolean('active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .default(sql`now()`),
@@ -1135,8 +1136,6 @@ export const xpEvents = subscriptionsSchema.table('xp_events', {
     .default(sql`now()`),
 })
 ```
-
-> Note: `active` is modeled as `text` here only to stay consistent if you'd rather use `boolean` — prefer `boolean('active').notNull().default(true)` from `drizzle-orm/pg-core`'s `boolean` import (add it to the import list) instead of `text`. Use `boolean`, not `text` — this note exists so the implementer picks the correct column type; do not literally ship a string `'true'`.
 
 Update `services/subscriptions/src/infrastructure/db/schema/index.ts`:
 
