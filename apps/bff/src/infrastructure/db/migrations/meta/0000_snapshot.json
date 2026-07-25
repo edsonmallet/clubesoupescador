@@ -78,12 +78,8 @@
           "tableFrom": "domains",
           "tableTo": "tenants",
           "schemaTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -161,12 +157,8 @@
           "tableFrom": "landing_configs",
           "tableTo": "tenants",
           "schemaTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -264,27 +256,17 @@
     "tenants.domain_type": {
       "name": "domain_type",
       "schema": "tenants",
-      "values": [
-        "subdomain",
-        "custom"
-      ]
+      "values": ["subdomain", "custom"]
     },
     "tenants.template_id": {
       "name": "template_id",
       "schema": "tenants",
-      "values": [
-        "clube-simples",
-        "clube-premium"
-      ]
+      "values": ["clube-simples", "clube-premium"]
     },
     "tenants.tenant_status": {
       "name": "tenant_status",
       "schema": "tenants",
-      "values": [
-        "active",
-        "suspended",
-        "canceled"
-      ]
+      "values": ["active", "suspended", "canceled"]
     }
   },
   "schemas": {

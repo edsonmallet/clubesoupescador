@@ -30,9 +30,7 @@ export const templateIdEnum = tenantsSchema.enum('template_id', [
 export const tenants = tenantsSchema.table(
   'tenants',
   {
-    id: uuid('id')
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
     slug: text('slug').notNull(),
     name: text('name').notNull(),
     logoUrl: text('logo_url'),
@@ -55,9 +53,7 @@ export const tenants = tenantsSchema.table(
 export const domains = tenantsSchema.table(
   'domains',
   {
-    id: uuid('id')
-      .primaryKey()
-      .default(sql`gen_random_uuid()`),
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
     tenantId: uuid('tenant_id')
       .notNull()
       .references(() => tenants.id),
@@ -75,9 +71,7 @@ export const domains = tenantsSchema.table(
 )
 
 export const landingConfigs = tenantsSchema.table('landing_configs', {
-  id: uuid('id')
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   tenantId: uuid('tenant_id')
     .notNull()
     .references(() => tenants.id),
