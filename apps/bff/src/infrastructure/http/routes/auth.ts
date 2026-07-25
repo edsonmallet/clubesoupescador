@@ -28,6 +28,8 @@ export async function registerAuthRoutes(
       const createdUser = await deps.registerUserUseCase.execute({
         uid: user.uid,
         tenantId: tenant.id,
+        currentRole: user.role,
+        currentTenantId: user.tenant_id,
       })
 
       reply.status(200).send({

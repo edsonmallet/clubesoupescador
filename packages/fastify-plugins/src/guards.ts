@@ -19,6 +19,17 @@ function guard(...allowedRoles: Role[]) {
       })
       return
     }
+
+    if (
+      request.user.tenant_id !== null &&
+      request.tenant &&
+      request.user.tenant_id !== request.tenant.id
+    ) {
+      reply.status(403).send({
+        error: { code: 'FORBIDDEN', message: 'Access denied' },
+      })
+      return
+    }
   }
 }
 

@@ -60,6 +60,8 @@ describe('auth routes', () => {
     expect(deps.registerUserUseCase.execute).toHaveBeenCalledWith({
       uid: 'firebase-uid-1',
       tenantId: 'tenant-1',
+      currentRole: 'user',
+      currentTenantId: 'tenant-1',
     })
   })
 

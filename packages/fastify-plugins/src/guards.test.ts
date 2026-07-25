@@ -1,6 +1,11 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { describe, expect, it, vi } from 'vitest'
-import { requireAuth, requireSubscriber, requireSuperAdmin } from './guards'
+import {
+  requireAuth,
+  requireOwner,
+  requireSubscriber,
+  requireSuperAdmin,
+} from './guards'
 
 function createMockReply() {
   return {
@@ -56,5 +61,35 @@ describe('guards', () => {
     expect(reply.send).toHaveBeenCalledWith({
       error: { code: 'FORBIDDEN', message: 'Access denied' },
     })
+  })
+
+  it('requireOwner rejects when the JWT tenant_id does not match the resolved tenant', async () => {
+    const reply = createMockReply()
+    const request = {
+      user: { uid: '1', role: 'store_owner', tenant_id: 'tenant-a' },
+      tenant: { id: 'tenant-b', slug: 'other' },
+    } as unknown as FastifyRequest
+    await requireOwner(request, reply)
+    expect(reply.status).toHaveBeenCalledWith(403)
+  })
+
+  it('requireOwner allows when the JWT tenant_id matches the resolved tenant', async () => {
+    const reply = createMockReply()
+    const request = {
+      user: { uid: '1', role: 'store_owner', tenant_id: 'tenant-a' },
+      tenant: { id: 'tenant-a', slug: 'mine' },
+    } as unknown as FastifyRequest
+    await requireOwner(request, reply)
+    expect(reply.status).not.toHaveBeenCalled()
+  })
+
+  it('requireSuperAdmin is exempt from the tenant-binding check (tenant_id is null)', async () => {
+    const reply = createMockReply()
+    const request = {
+      user: { uid: '1', role: 'super_admin', tenant_id: null },
+      tenant: { id: 'tenant-a', slug: 'mine' },
+    } as unknown as FastifyRequest
+    await requireSuperAdmin(request, reply)
+    expect(reply.status).not.toHaveBeenCalled()
   })
 })
