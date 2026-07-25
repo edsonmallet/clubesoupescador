@@ -24,7 +24,6 @@ import { ProcessWebhookUseCase } from './process-webhook.usecase'
 
 vi.mock('@clube/firebase-utils', () => ({
   setRole: vi.fn(),
-  revokeRole: vi.fn(),
 }))
 
 const TENANT_ID = '00000000-0000-0000-0000-000000000001'
@@ -107,8 +106,7 @@ describe('ProcessWebhookUseCase', () => {
     )
   })
 
-  it('marks the subscriber overdue and revokes the role on PAYMENT_OVERDUE', async () => {
-    const { revokeRole } = await import('@clube/firebase-utils')
+  it('marks the subscriber overdue and downgrades the role, keeping tenant_id, on PAYMENT_OVERDUE', async () => {
     const created = await subscriptionRepository.create({
       tenantId: TENANT_ID,
       uid: 'uid-overdue',
@@ -126,11 +124,10 @@ describe('ProcessWebhookUseCase', () => {
 
     const updated = await subscriptionRepository.findById(created.id)
     expect(updated?.status).toBe('overdue')
-    expect(revokeRole).toHaveBeenCalledWith('uid-overdue')
+    expect(setRole).toHaveBeenCalledWith('uid-overdue', 'user', TENANT_ID)
   })
 
-  it('cancels the subscriber and revokes the role on SUBSCRIPTION_CANCELLED', async () => {
-    const { revokeRole } = await import('@clube/firebase-utils')
+  it('cancels the subscriber and downgrades the role, keeping tenant_id, on SUBSCRIPTION_CANCELLED', async () => {
     const created = await subscriptionRepository.create({
       tenantId: TENANT_ID,
       uid: 'uid-cancelled',
@@ -148,7 +145,37 @@ describe('ProcessWebhookUseCase', () => {
 
     const updated = await subscriptionRepository.findById(created.id)
     expect(updated?.status).toBe('cancelled')
-    expect(revokeRole).toHaveBeenCalledWith('uid-cancelled')
+    expect(setRole).toHaveBeenCalledWith('uid-cancelled', 'user', TENANT_ID)
+  })
+
+  it('cancels the subscriber on the real Asaas SUBSCRIPTION_DELETED event, read from event.subscription.id', async () => {
+    const created = await subscriptionRepository.create({
+      tenantId: TENANT_ID,
+      uid: 'uid-deleted',
+      planId,
+      asaasCustomerId: 'cus_4',
+      asaasSubscriptionId: 'asub_deleted',
+      status: 'active',
+    })
+
+    const usecase = buildUseCase()
+    await usecase.execute({
+      id: 'evt_1',
+      event: 'SUBSCRIPTION_DELETED',
+      subscription: { id: 'asub_deleted' },
+    })
+
+    const updated = await subscriptionRepository.findById(created.id)
+    expect(updated?.status).toBe('cancelled')
+    expect(setRole).toHaveBeenCalledWith('uid-deleted', 'user', TENANT_ID)
+  })
+
+  it('is a no-op for an event carrying neither a payment nor a subscription', async () => {
+    const usecase = buildUseCase()
+    await expect(
+      usecase.execute({ id: 'evt_2', event: 'ACCOUNT_STATUS_UPDATED' }),
+    ).resolves.toBeUndefined()
+    expect(setRole).not.toHaveBeenCalled()
   })
 
   it('does nothing when no subscriber matches the Asaas subscription id', async () => {
