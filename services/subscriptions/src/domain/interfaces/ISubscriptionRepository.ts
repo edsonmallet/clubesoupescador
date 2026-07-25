@@ -14,6 +14,7 @@ export interface ISubscriptionRepository {
   findByAsaasSubscriptionId(
     asaasSubscriptionId: string,
   ): Promise<Subscription | null>
+  findById(id: string): Promise<Subscription | null>
   create(data: CreateSubscriptionDto): Promise<Subscription>
   updateStatus(id: string, status: SubscriptionStatus): Promise<Subscription>
   updateXp(

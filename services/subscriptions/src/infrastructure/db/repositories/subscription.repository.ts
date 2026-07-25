@@ -52,6 +52,16 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     return row ? toDomain(row) : null
   }
 
+  async findById(id: string): Promise<Subscription | null> {
+    const [row] = await this.db
+      .select()
+      .from(subscribers)
+      .where(eq(subscribers.id, id))
+      .limit(1)
+
+    return row ? toDomain(row) : null
+  }
+
   async create(data: CreateSubscriptionDto): Promise<Subscription> {
     const [row] = await this.db
       .insert(subscribers)
