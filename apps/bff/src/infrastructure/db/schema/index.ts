@@ -5,10 +5,11 @@
 // "0 tables" and produces no migration.
 export * from './tenants'
 
-import { domains, landingConfigs, tenants } from './tenants'
+import { domains, landingConfigs, tenants, users } from './tenants'
 
 export const schema = {
   tenants,
   domains,
   landingConfigs,
+  users,
 }

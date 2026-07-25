@@ -27,6 +27,16 @@ export const templateIdEnum = tenantsSchema.enum('template_id', [
   'clube-premium',
 ])
 
+// Mirrors @clube/shared-types's Role union — keep both in sync.
+export const userRoleEnum = tenantsSchema.enum('user_role', [
+  'super_admin',
+  'store_owner',
+  'store_manager',
+  'community_mod',
+  'subscriber',
+  'user',
+])
+
 export const tenants = tenantsSchema.table(
   'tenants',
   {
@@ -67,6 +77,29 @@ export const domains = tenantsSchema.table(
   },
   (table) => ({
     domainIdx: uniqueIndex('domains_domain_idx').on(table.domain),
+  }),
+)
+
+export const users = tenantsSchema.table(
+  'users',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    tenantId: uuid('tenant_id')
+      .notNull()
+      .references(() => tenants.id),
+    uid: text('uid').notNull(),
+    role: userRoleEnum('role').notNull().default('user'),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .default(sql`now()`),
+  },
+  (table) => ({
+    uidTenantIdx: uniqueIndex('users_uid_tenant_idx').on(
+      table.uid,
+      table.tenantId,
+    ),
   }),
 )
 
