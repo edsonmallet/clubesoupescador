@@ -5,7 +5,12 @@
   "engines": {
     "node": ">=20"
   },
-  "workspaces": ["apps/*", "services/*", "packages/*", "mobile/*"],
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*",
+    "mobile/*"
+  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -20,7 +25,7 @@
     "dotenv": "^16.4.5",
     "pg": "^8.12.0",
     "redis": "^4.7.0",
-    "turbo": "^2.1.3",
+    "turbo": "^2.10.7",
     "typescript": "^5.5.4"
   },
   "overrides": {
