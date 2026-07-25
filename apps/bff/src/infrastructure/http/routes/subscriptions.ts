@@ -1,10 +1,22 @@
 import type { Tenant } from '@clube/fastify-plugins'
+import { Type } from '@sinclair/typebox'
 import type {
   FastifyInstance,
   FastifyReply,
   FastifyRequest,
   preHandlerHookHandler,
 } from 'fastify'
+
+/**
+ * These routes are pure passthroughs: the authoritative response shapes are
+ * owned and validated by services/subscriptions. The proxy deliberately does
+ * not re-validate them, so the schema stays permissive.
+ */
+const ProxyResponseSchema = {
+  '2xx': Type.Unknown(),
+  '4xx': Type.Unknown(),
+  '5xx': Type.Unknown(),
+}
 
 export type SubscriptionsProxyDeps = {
   subscriptionsServiceUrl: string
@@ -41,7 +53,10 @@ export async function registerSubscriptionsProxyRoutes(
 ): Promise<void> {
   app.get(
     '/v1/subscriptions/plans',
-    { preHandler: [deps.tenantAuthPreHandler] },
+    {
+      preHandler: [deps.tenantAuthPreHandler],
+      schema: { response: ProxyResponseSchema },
+    },
     async (request, reply) => {
       await forward(request, reply, deps, '/plans')
     },
@@ -49,7 +64,10 @@ export async function registerSubscriptionsProxyRoutes(
 
   app.post(
     '/v1/subscriptions/checkout',
-    { preHandler: [deps.tenantAuthPreHandler, deps.requireAuth] },
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireAuth],
+      schema: { response: ProxyResponseSchema },
+    },
     async (request, reply) => {
       await forward(request, reply, deps, '/subscriptions/checkout')
     },
@@ -57,7 +75,10 @@ export async function registerSubscriptionsProxyRoutes(
 
   app.get(
     '/v1/subscriptions/me',
-    { preHandler: [deps.tenantAuthPreHandler, deps.requireAuth] },
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireAuth],
+      schema: { response: ProxyResponseSchema },
+    },
     async (request, reply) => {
       await forward(request, reply, deps, '/subscriptions/me')
     },
@@ -65,25 +86,32 @@ export async function registerSubscriptionsProxyRoutes(
 
   app.get(
     '/v1/subscriptions/me/xp',
-    { preHandler: [deps.tenantAuthPreHandler, deps.requireAuth] },
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireAuth],
+      schema: { response: ProxyResponseSchema },
+    },
     async (request, reply) => {
       await forward(request, reply, deps, '/subscriptions/me')
     },
   )
 
-  app.post('/v1/subscriptions/webhook', async (request, reply) => {
-    const headers: Record<string, string> = {
-      'content-type': 'application/json',
-    }
-    const token = request.headers['asaas-access-token']
-    if (typeof token === 'string') headers['asaas-access-token'] = token
+  app.post(
+    '/v1/subscriptions/webhook',
+    { schema: { response: ProxyResponseSchema } },
+    async (request, reply) => {
+      const headers: Record<string, string> = {
+        'content-type': 'application/json',
+      }
+      const token = request.headers['asaas-access-token']
+      if (typeof token === 'string') headers['asaas-access-token'] = token
 
-    const response = await fetch(`${deps.subscriptionsServiceUrl}/webhook`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(request.body),
-    })
-    const body = await response.json()
-    reply.status(response.status).send(body)
-  })
+      const response = await fetch(`${deps.subscriptionsServiceUrl}/webhook`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(request.body),
+      })
+      const body = await response.json()
+      reply.status(response.status).send(body)
+    },
+  )
 }
