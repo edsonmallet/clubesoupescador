@@ -6,11 +6,18 @@ function guard(...allowedRoles: Role[]) {
     request: FastifyRequest,
     reply: FastifyReply,
   ): Promise<void> {
-    const role = request.user?.role
-    if (!role || !allowedRoles.includes(role)) {
-      reply
-        .status(403)
-        .send({ error: { code: 'FORBIDDEN', message: 'Access denied' } })
+    if (!request.user) {
+      reply.status(401).send({
+        error: { code: 'UNAUTHENTICATED', message: 'Authentication required' },
+      })
+      return
+    }
+
+    if (!allowedRoles.includes(request.user.role)) {
+      reply.status(403).send({
+        error: { code: 'FORBIDDEN', message: 'Access denied' },
+      })
+      return
     }
   }
 }

@@ -28,15 +28,33 @@ describe('guards', () => {
     expect(reply.status).toHaveBeenCalledWith(403)
   })
 
-  it('requireSuperAdmin rejects a missing role', async () => {
+  it('requireSuperAdmin rejects a missing role with 401', async () => {
     const reply = createMockReply()
     await requireSuperAdmin(createRequestWithRole(undefined), reply)
-    expect(reply.status).toHaveBeenCalledWith(403)
+    expect(reply.status).toHaveBeenCalledWith(401)
   })
 
   it('requireAuth allows any known role', async () => {
     const reply = createMockReply()
     await requireAuth(createRequestWithRole('user'), reply)
     expect(reply.status).not.toHaveBeenCalled()
+  })
+
+  it('requireSubscriber replies 401 when there is no authenticated user at all', async () => {
+    const reply = createMockReply()
+    await requireSubscriber(createRequestWithRole(undefined), reply)
+    expect(reply.status).toHaveBeenCalledWith(401)
+    expect(reply.send).toHaveBeenCalledWith({
+      error: { code: 'UNAUTHENTICATED', message: 'Authentication required' },
+    })
+  })
+
+  it('requireSubscriber replies 403 (not 401) when a valid user has the wrong role', async () => {
+    const reply = createMockReply()
+    await requireSubscriber(createRequestWithRole('user'), reply)
+    expect(reply.status).toHaveBeenCalledWith(403)
+    expect(reply.send).toHaveBeenCalledWith({
+      error: { code: 'FORBIDDEN', message: 'Access denied' },
+    })
   })
 })

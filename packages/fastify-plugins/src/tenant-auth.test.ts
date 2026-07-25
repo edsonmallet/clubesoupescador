@@ -10,6 +10,10 @@ vi.mock('firebase-admin/auth', () => ({
   getAuth: () => ({ verifyIdToken }),
 }))
 
+vi.mock('@clube/firebase-utils', () => ({
+  getFirebaseApp: () => ({}),
+}))
+
 function createMockReply() {
   return {
     status: vi.fn().mockReturnThis(),
@@ -103,5 +107,55 @@ describe('createTenantAuthPreHandler', () => {
     } finally {
       process.env.NODE_ENV = originalNodeEnv
     }
+  })
+
+  it('replies 401 with TOKEN_EXPIRED when the token is expired', async () => {
+    verifyIdToken.mockRejectedValueOnce(
+      Object.assign(new Error('Firebase ID token has expired'), {
+        code: 'auth/id-token-expired',
+      }),
+    )
+    const tenant = { id: '1', slug: 'soupescador' }
+    const preHandler = createTenantAuthPreHandler(async () => tenant)
+    const request = {
+      headers: {
+        host: 'soupescador.clube.com.br',
+        authorization: 'Bearer expired-token',
+      },
+    } as unknown as FastifyRequest
+    const reply = createMockReply()
+
+    await preHandler(request, reply)
+
+    expect(reply.status).toHaveBeenCalledWith(401)
+    expect(reply.send).toHaveBeenCalledWith({
+      error: { code: 'TOKEN_EXPIRED', message: 'Token expired' },
+    })
+    expect(request.user).toBeUndefined()
+  })
+
+  it('replies 401 with INVALID_TOKEN for any other verification failure', async () => {
+    verifyIdToken.mockRejectedValueOnce(
+      Object.assign(new Error('Decoding Firebase ID token failed'), {
+        code: 'auth/argument-error',
+      }),
+    )
+    const tenant = { id: '1', slug: 'soupescador' }
+    const preHandler = createTenantAuthPreHandler(async () => tenant)
+    const request = {
+      headers: {
+        host: 'soupescador.clube.com.br',
+        authorization: 'Bearer malformed-token',
+      },
+    } as unknown as FastifyRequest
+    const reply = createMockReply()
+
+    await preHandler(request, reply)
+
+    expect(reply.status).toHaveBeenCalledWith(401)
+    expect(reply.send).toHaveBeenCalledWith({
+      error: { code: 'INVALID_TOKEN', message: 'Invalid token' },
+    })
+    expect(request.user).toBeUndefined()
   })
 })
