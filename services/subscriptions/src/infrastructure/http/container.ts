@@ -6,7 +6,7 @@ import { db } from '../db'
 import { LevelRepository } from '../db/repositories/level.repository'
 import { PlanRepository } from '../db/repositories/plan.repository'
 import { SubscriptionRepository } from '../db/repositories/subscription.repository'
-import { xpEvents } from '../db/schema/subscriptions'
+import { XpEventRepository } from '../db/repositories/xp-event.repository'
 import { getAsaasClient } from '../external/asaas/client'
 import { enqueueProcessWebhook } from '../queue/subscriptions.queue'
 import { requireAuth, subscriptionsAuthPreHandler } from './proxy'
@@ -14,6 +14,7 @@ import { requireAuth, subscriptionsAuthPreHandler } from './proxy'
 export const subscriptionRepository = new SubscriptionRepository(db)
 export const planRepository = new PlanRepository(db)
 export const levelRepository = new LevelRepository(db)
+export const xpEventRepository = new XpEventRepository(db)
 
 export const listPlansUseCase = new ListPlansUseCase(planRepository)
 export const createCheckoutUseCase = new CreateCheckoutUseCase(
@@ -22,19 +23,10 @@ export const createCheckoutUseCase = new CreateCheckoutUseCase(
   getAsaasClient(),
 )
 
-async function insertXpEvent(event: {
-  tenantId: string
-  subscriberId: string
-  amount: number
-  source: string
-}): Promise<void> {
-  await db.insert(xpEvents).values(event)
-}
-
 export const grantXpUseCase = new GrantXpUseCase(
   subscriptionRepository,
   levelRepository,
-  insertXpEvent,
+  (event) => xpEventRepository.insert(event),
 )
 export const processWebhookUseCase = new ProcessWebhookUseCase(
   subscriptionRepository,
