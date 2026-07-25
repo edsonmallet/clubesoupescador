@@ -12,6 +12,8 @@ import {
 } from './infrastructure/http/container'
 import { requireAuth } from './infrastructure/http/proxy'
 import { registerAuthRoutes } from './infrastructure/http/routes/auth'
+import { registerSubscriptionsProxyRoutes } from './infrastructure/http/routes/subscriptions'
+import { env } from './shared/env'
 
 export async function buildApp(
   opts: { logger?: boolean } = {},
@@ -27,6 +29,11 @@ export async function buildApp(
     requireAuth,
     registerUserUseCase,
     getMeUseCase,
+  })
+  await registerSubscriptionsProxyRoutes(app, {
+    subscriptionsServiceUrl: env.SUBSCRIPTIONS_SERVICE_URL,
+    tenantAuthPreHandler,
+    requireAuth,
   })
 
   return app

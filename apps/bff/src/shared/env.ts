@@ -34,6 +34,10 @@ export const env = createEnv({
     DATABASE_URL: z.string().min(1),
     FIREBASE_PROJECT_ID: z.string().min(1),
     FIREBASE_SERVICE_ACCOUNT: z.string().min(1),
+    SUBSCRIPTIONS_SERVICE_URL: z
+      .string()
+      .url()
+      .default('http://localhost:3005'),
   },
   runtimeEnv: process.env,
 })
