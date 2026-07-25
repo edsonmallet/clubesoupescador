@@ -2,6 +2,7 @@ export { registerCors } from './cors'
 export { registerHealth } from './health'
 export { registerErrorHandler } from './error-handler'
 export { registerScalar } from './scalar'
+export { createFirebaseAuthPreHandler } from './firebase-auth'
 export { createTenantAuthPreHandler } from './tenant-auth'
 export type { AuthenticatedUser, ResolveTenant, Tenant } from './tenant-auth'
 export {
