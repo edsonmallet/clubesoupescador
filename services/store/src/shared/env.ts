@@ -1,5 +1,11 @@
+import { resolve } from 'node:path'
 import type { createEnv as CreateEnvFn } from '@t3-oss/env-core/types'
+import { config } from 'dotenv'
 import { z } from 'zod'
+
+// See services/subscriptions/src/shared/env.ts for why this loads the
+// monorepo-root `.env` explicitly (cwd differs across turbo/tsx/vitest/node).
+config({ path: resolve(__dirname, '../../../../.env') })
 
 // `@t3-oss/env-core` is ESM-only. `tsc`'s CommonJS output already compiles a
 // static `import` down to a plain `require()`, which Node's native
@@ -22,6 +28,20 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(['development', 'production', 'test'])
       .default('development'),
+    DATABASE_URL: z.string().min(1),
+    REDIS_URL: z.string().min(1),
+    FIREBASE_PROJECT_ID: z.string().min(1),
+    FIREBASE_SERVICE_ACCOUNT: z.string().min(1),
+    ASAAS_API_KEY: z.string().min(1),
+    ASAAS_ENV: z.enum(['sandbox', 'production']).default('sandbox'),
+    ASAAS_WEBHOOK_TOKEN: z.string().min(1),
+    MELHOR_ENVIO_TOKEN: z.string().min(1),
+    MELHOR_ENVIO_ENV: z.enum(['sandbox', 'production']).default('sandbox'),
+    STORE_ORIGIN_ZIP_CODE: z.string().min(1),
+    SUBSCRIPTIONS_SERVICE_URL: z
+      .string()
+      .url()
+      .default('http://localhost:3005'),
   },
   runtimeEnv: process.env,
 })

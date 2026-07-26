@@ -1,4 +1,4 @@
-import { desc, lte } from 'drizzle-orm'
+import { desc, eq, lte } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { Level } from '../../../domain/entities/level'
 import type { ILevelRepository } from '../../../domain/interfaces/ILevelRepository'
@@ -23,6 +23,16 @@ export class LevelRepository implements ILevelRepository {
   async findAll(): Promise<Level[]> {
     const rows = await this.db.select().from(levels).orderBy(levels.minXp)
     return rows.map(toDomain)
+  }
+
+  async findById(id: string): Promise<Level | null> {
+    const [row] = await this.db
+      .select()
+      .from(levels)
+      .where(eq(levels.id, id))
+      .limit(1)
+
+    return row ? toDomain(row) : null
   }
 
   async findHighestForXp(totalXp: number): Promise<Level | null> {

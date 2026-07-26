@@ -1,0 +1,1 @@
+ALTER TABLE "store"."orders" ADD COLUMN "level_id" uuid;

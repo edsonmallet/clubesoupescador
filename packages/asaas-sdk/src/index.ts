@@ -52,6 +52,14 @@ export type CreateAsaasSubscriptionDto = {
   nextDueDate: string
 }
 
+export type CreateAsaasPaymentDto = {
+  customer: string
+  billingType: 'UNDEFINED' | 'BOLETO' | 'CREDIT_CARD' | 'PIX'
+  value: number
+  dueDate: string
+  externalReference?: string
+}
+
 export class AsaasClient {
   private readonly baseUrl: string
   private readonly apiKey: string
@@ -100,6 +108,17 @@ export class AsaasClient {
     data: CreateAsaasSubscriptionDto,
   ): Promise<AsaasSubscription> {
     return this.request<AsaasSubscription>('/subscriptions', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  /**
+   * Creates a one-off payment (cobrança avulsa), used for store orders —
+   * unlike subscriptions, these are single charges with no recurrence.
+   */
+  async createPayment(data: CreateAsaasPaymentDto): Promise<AsaasPayment> {
+    return this.request<AsaasPayment>('/payments', {
       method: 'POST',
       body: JSON.stringify(data),
     })

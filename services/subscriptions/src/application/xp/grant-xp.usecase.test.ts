@@ -31,7 +31,11 @@ describe('GrantXpUseCase', () => {
       updateXp: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
     }
-    const levelRepository = { findAll: vi.fn(), findHighestForXp: vi.fn() }
+    const levelRepository = {
+      findAll: vi.fn(),
+      findById: vi.fn(),
+      findHighestForXp: vi.fn(),
+    }
     const insertXpEvent = vi.fn()
 
     const usecase = new GrantXpUseCase(
@@ -79,6 +83,7 @@ describe('GrantXpUseCase', () => {
     }
     const levelRepository = {
       findAll: vi.fn(),
+      findById: vi.fn(),
       findHighestForXp: vi.fn().mockResolvedValue(prata),
     }
     const insertXpEvent = vi.fn()

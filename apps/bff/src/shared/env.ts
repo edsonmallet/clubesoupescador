@@ -38,6 +38,7 @@ export const env = createEnv({
       .string()
       .url()
       .default('http://localhost:3005'),
+    STORE_SERVICE_URL: z.string().url().default('http://localhost:3006'),
   },
   runtimeEnv: process.env,
 })
