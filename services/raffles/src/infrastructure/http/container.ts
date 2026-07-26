@@ -6,6 +6,7 @@ import { db } from '../db'
 import { RaffleRepository } from '../db/repositories/raffle.repository'
 import { TicketRepository } from '../db/repositories/ticket.repository'
 import { getAsaasClient } from '../external/asaas/client'
+import { CommunityClient } from '../external/community/client'
 import { LoteriaFederalClient } from '../external/loteria-federal/client'
 import { FcmNotifier } from '../external/notifications/fcm-notifier'
 import { SubscriptionsClient } from '../external/subscriptions/client'
@@ -26,6 +27,7 @@ export const ticketRepository = new TicketRepository(db)
 export const subscriptionsClient = new SubscriptionsClient()
 export const loteriaFederalClient = new LoteriaFederalClient()
 export const notifier = new FcmNotifier()
+export const communityClient = new CommunityClient()
 
 export const listRafflesUseCase = new ListRafflesUseCase(raffleRepository)
 

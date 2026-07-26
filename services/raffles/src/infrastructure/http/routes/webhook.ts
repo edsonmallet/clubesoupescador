@@ -27,14 +27,12 @@ export async function registerWebhookRoutes(
     async (request, reply) => {
       const token = request.headers['asaas-access-token']
       if (token !== env.ASAAS_WEBHOOK_TOKEN) {
-        reply
-          .status(401)
-          .send({
-            error: {
-              code: 'INVALID_WEBHOOK_TOKEN',
-              message: 'Invalid webhook token',
-            },
-          })
+        reply.status(401).send({
+          error: {
+            code: 'INVALID_WEBHOOK_TOKEN',
+            message: 'Invalid webhook token',
+          },
+        })
         return
       }
 

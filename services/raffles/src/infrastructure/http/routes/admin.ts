@@ -2,6 +2,7 @@ import type { FastifyInstance, preHandlerHookHandler } from 'fastify'
 import type { RaffleStatus } from '../../../domain/entities/Raffle'
 import { RaffleNotFoundError } from '../../../domain/errors'
 import type { IRaffleRepository } from '../../../domain/interfaces/IRaffleRepository'
+import type { CommunityClient } from '../../external/community/client'
 import {
   CreateRaffleBodySchema,
   DrawQueuedResponseSchema,
@@ -22,6 +23,7 @@ export type AdminRouteDeps = {
   requireOwner: preHandlerHookHandler
   raffleRepository: IRaffleRepository
   enqueueDrawRaffle: EnqueueDrawRaffle
+  communityClient: CommunityClient
 }
 
 function requireTenantId(headers: Record<string, unknown>): string | null {
@@ -66,6 +68,22 @@ export async function registerAdminRoutes(
         tenantId,
         ...body,
       })
+
+      // Best-effort — the raffle already exists once created; a failed
+      // community post shouldn't roll back or fail the raffle creation.
+      try {
+        await deps.communityClient.createSystemTopic({
+          tenantId,
+          categorySlug: 'rifas',
+          title: `Nova rifa: ${raffle.title}`,
+          body: `${raffle.description}\n\nPrêmio: ${raffle.prize}`,
+        })
+      } catch (error) {
+        request.log.error(
+          error,
+          'Failed to auto-create community topic for raffle',
+        )
+      }
 
       reply.status(201).send({
         id: raffle.id,

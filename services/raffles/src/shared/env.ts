@@ -39,6 +39,8 @@ export const env = createEnv({
       .string()
       .url()
       .default('http://localhost:3005'),
+    COMMUNITY_SERVICE_URL: z.string().url().default('http://localhost:3010'),
+    INTERNAL_SERVICE_TOKEN: z.string().min(1),
   },
   runtimeEnv: process.env,
 })

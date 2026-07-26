@@ -17,6 +17,7 @@ import {
 } from './infrastructure/http/proxy'
 import { registerAuthRoutes } from './infrastructure/http/routes/auth'
 import { registerCashbackProxyRoutes } from './infrastructure/http/routes/cashback'
+import { registerCommunityProxyRoutes } from './infrastructure/http/routes/community'
 import { registerRafflesProxyRoutes } from './infrastructure/http/routes/raffles'
 import { registerStoreProxyRoutes } from './infrastructure/http/routes/store'
 import { registerSubscriptionsProxyRoutes } from './infrastructure/http/routes/subscriptions'
@@ -57,6 +58,13 @@ export async function buildApp(
   await registerRafflesProxyRoutes(app, {
     rafflesServiceUrl: env.RAFFLES_SERVICE_URL,
     tenantAuthPreHandler,
+    requireSubscriber,
+    requireOwner,
+  })
+  await registerCommunityProxyRoutes(app, {
+    communityServiceUrl: env.COMMUNITY_SERVICE_URL,
+    tenantAuthPreHandler,
+    requireAuth,
     requireSubscriber,
     requireOwner,
   })

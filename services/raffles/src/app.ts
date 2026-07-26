@@ -7,6 +7,7 @@ import {
 import Fastify, { type FastifyInstance } from 'fastify'
 import {
   buyTicketsUseCase,
+  communityClient,
   enqueueConfirmTickets,
   enqueueDrawRaffle,
   joinRaffleUseCase,
@@ -44,6 +45,7 @@ export async function buildApp(
     requireOwner,
     raffleRepository,
     enqueueDrawRaffle,
+    communityClient,
   })
   await registerWebhookRoutes(app, { enqueueConfirmTickets })
 

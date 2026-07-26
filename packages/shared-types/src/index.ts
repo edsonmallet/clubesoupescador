@@ -215,3 +215,65 @@ export type BuyTicketsResponse = {
   tickets: Ticket[]
   paymentUrl: string | null
 }
+
+export type Category = {
+  id: string
+  slug: string
+  name: string
+  description: string
+}
+
+export type Topic = {
+  id: string
+  categoryId: string
+  authorUid: string
+  title: string
+  body: string
+  pinned: boolean
+  locked: boolean
+  voteScore: number
+  commentCount: number
+  createdAt: string
+}
+
+export type TopicSort = 'hot' | 'new' | 'top' | 'rising'
+
+export type CommunityComment = {
+  id: string
+  topicId: string
+  authorUid: string
+  parentId: string | null
+  depth: number
+  body: string
+  voteScore: number
+  deleted: boolean
+  createdAt: string
+}
+
+export type ReactionCounts = Record<string, number>
+
+export type TopicDetail = {
+  topic: Topic
+  comments: CommunityComment[]
+  reactionCounts: ReactionCounts
+  myReactions: string[]
+}
+
+export type CreateTopicInput = {
+  categoryId: string
+  title: string
+  body: string
+}
+
+export type CreateCommentInput = {
+  parentId: string | null
+  body: string
+}
+
+export type ToggleVoteResponse = {
+  scoreDelta: number
+}
+
+export type ToggleReactionResponse = {
+  added: boolean
+}
