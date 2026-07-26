@@ -39,6 +39,7 @@ export const env = createEnv({
       .url()
       .default('http://localhost:3005'),
     STORE_SERVICE_URL: z.string().url().default('http://localhost:3006'),
+    CASHBACK_SERVICE_URL: z.string().url().default('http://localhost:3007'),
   },
   runtimeEnv: process.env,
 })

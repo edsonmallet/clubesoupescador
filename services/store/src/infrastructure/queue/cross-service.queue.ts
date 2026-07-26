@@ -9,13 +9,10 @@ import { env } from '../../shared/env'
 /**
  * store publishes onto the OTHER services' queues (per CLAUDE.md's queue
  * table: subscriptions-queue handles grant-xp, cashback-queue handles
- * grant-cashback). BullMQ only needs the shared Redis connection and queue
- * name to add a job — the consuming worker lives in that other service.
- *
- * Neither services/subscriptions nor services/cashback currently has a
- * worker consuming these job names (subscriptions-queue's worker only
- * handles `process-webhook`, and cashback has no business logic yet), so
- * these jobs sit queued until that consumer is implemented there.
+ * grant-cashback/debit-cashback). BullMQ only needs the shared Redis
+ * connection and queue name to add a job — the consuming worker lives in
+ * that other service (services/cashback's worker, services/subscriptions'
+ * grant-xp job is still unconsumed — see that service for status).
  */
 const subscriptionsQueue = new Queue('subscriptions-queue', {
   connection: { url: env.REDIS_URL },

@@ -44,7 +44,6 @@ export const createOrderUseCase = new CreateOrderUseCase(
 
 export const processPaymentWebhookUseCase = new ProcessPaymentWebhookUseCase(
   orderRepository,
-  subscriptionsClient,
   enqueueGrantXp,
   enqueueGrantCashback,
 )

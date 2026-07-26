@@ -150,3 +150,25 @@ export type ShippingOption = {
   price: number
   deliveryTimeDays: number
 }
+
+export type CashbackBalance = {
+  availableCents: number
+  expiringSoonCents: number
+  nextExpiryAt: string | null
+}
+
+export type CashbackEntryType =
+  | 'earned_purchase'
+  | 'redeemed'
+  | 'expired_to_xp'
+  | 'manual_adjustment'
+
+export type CashbackEntry = {
+  id: string
+  type: CashbackEntryType
+  amountCents: number
+  source: string
+  sourceId: string | null
+  expiresAt: string | null
+  createdAt: string
+}

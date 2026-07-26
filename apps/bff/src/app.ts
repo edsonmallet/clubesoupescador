@@ -16,6 +16,7 @@ import {
   requireSubscriber,
 } from './infrastructure/http/proxy'
 import { registerAuthRoutes } from './infrastructure/http/routes/auth'
+import { registerCashbackProxyRoutes } from './infrastructure/http/routes/cashback'
 import { registerStoreProxyRoutes } from './infrastructure/http/routes/store'
 import { registerSubscriptionsProxyRoutes } from './infrastructure/http/routes/subscriptions'
 import { env } from './shared/env'
@@ -46,6 +47,11 @@ export async function buildApp(
     requireAuth,
     requireSubscriber,
     requireOwner,
+  })
+  await registerCashbackProxyRoutes(app, {
+    cashbackServiceUrl: env.CASHBACK_SERVICE_URL,
+    tenantAuthPreHandler,
+    requireAuth,
   })
 
   return app

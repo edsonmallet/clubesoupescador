@@ -71,12 +71,10 @@ describe('CreateOrderUseCase (real database)', () => {
       findCustomerByExternalReference: vi
         .fn()
         .mockResolvedValue({ id: 'cus_1' }),
-      createPayment: vi
-        .fn()
-        .mockResolvedValue({
-          id: 'pay_1',
-          invoiceUrl: 'https://pay.asaas.com/x',
-        }),
+      createPayment: vi.fn().mockResolvedValue({
+        id: 'pay_1',
+        invoiceUrl: 'https://pay.asaas.com/x',
+      }),
     }
     const enqueueCashbackDebit = vi.fn()
 

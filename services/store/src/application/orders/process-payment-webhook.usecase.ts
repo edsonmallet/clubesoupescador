@@ -1,5 +1,4 @@
 import type { IOrderRepository } from '../../domain/interfaces/IOrderRepository'
-import type { ISubscriptionsClient } from '../../domain/interfaces/ISubscriptionsClient'
 
 /**
  * Asaas payment event payload (https://docs.asaas.com/docs/payment-events).
@@ -25,7 +24,7 @@ export type EnqueueGrantXp = (data: {
 export type EnqueueGrantCashback = (data: {
   tenantId: string
   uid: string
-  amountCents: number
+  paidAmountCents: number
   orderId: string
   source: string
 }) => Promise<void>
@@ -33,7 +32,6 @@ export type EnqueueGrantCashback = (data: {
 export class ProcessPaymentWebhookUseCase {
   constructor(
     private readonly orderRepository: IOrderRepository,
-    private readonly subscriptionsClient: ISubscriptionsClient,
     private readonly enqueueGrantXp: EnqueueGrantXp,
     private readonly enqueueGrantCashback: EnqueueGrantCashback,
   ) {}
@@ -58,28 +56,15 @@ export class ProcessPaymentWebhookUseCase {
       source: 'store_purchase',
     })
 
-    const cashbackEarnedCents = await this.calculateCashbackEarned(
-      order.levelId,
-      order.totalCents,
-    )
-    if (cashbackEarnedCents > 0) {
-      await this.enqueueGrantCashback({
-        tenantId: order.tenantId,
-        uid: order.uid,
-        amountCents: cashbackEarnedCents,
-        orderId: order.id,
-        source: 'earned_purchase',
-      })
-    }
-  }
-
-  private async calculateCashbackEarned(
-    levelId: string | null,
-    totalCents: number,
-  ): Promise<number> {
-    if (!levelId) return 0
-    const level = await this.subscriptionsClient.getLevelDiscount(levelId)
-    if (!level) return 0
-    return Math.round((totalCents * level.cashbackPct) / 100)
+    // The cashback % is owned by services/cashback (per-source config,
+    // admin-configurable) — store just reports what was paid and lets it
+    // decide the amount, instead of duplicating that calculation here.
+    await this.enqueueGrantCashback({
+      tenantId: order.tenantId,
+      uid: order.uid,
+      paidAmountCents: order.totalCents,
+      orderId: order.id,
+      source: 'earned_purchase',
+    })
   }
 }

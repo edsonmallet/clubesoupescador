@@ -1,6 +1,7 @@
 import { CreateCheckoutUseCase } from '../../application/subscriptions/create-checkout.usecase'
 import { ListPlansUseCase } from '../../application/subscriptions/list-plans.usecase'
 import { ProcessWebhookUseCase } from '../../application/subscriptions/process-webhook.usecase'
+import { GrantXpByUidUseCase } from '../../application/xp/grant-xp-by-uid.usecase'
 import { GrantXpUseCase } from '../../application/xp/grant-xp.usecase'
 import { db } from '../db'
 import { LevelRepository } from '../db/repositories/level.repository'
@@ -27,6 +28,10 @@ export const grantXpUseCase = new GrantXpUseCase(
   subscriptionRepository,
   levelRepository,
   (event) => xpEventRepository.insert(event),
+)
+export const grantXpByUidUseCase = new GrantXpByUidUseCase(
+  subscriptionRepository,
+  grantXpUseCase,
 )
 export const processWebhookUseCase = new ProcessWebhookUseCase(
   subscriptionRepository,
