@@ -172,3 +172,46 @@ export type CashbackEntry = {
   expiresAt: string | null
   createdAt: string
 }
+
+export type RaffleStatus = 'open' | 'closed' | 'drawn'
+
+export type Raffle = {
+  id: string
+  title: string
+  description: string
+  prize: string
+  imageUrl: string | null
+  ticketPriceCents: number
+  status: RaffleStatus
+  contestNumber: number | null
+  winnerTicket: number | null
+  winnerUid: string | null
+  drawnAt: string | null
+  createdAt: string
+}
+
+export type RaffleResult = {
+  status: RaffleStatus
+  contestNumber: number | null
+  winnerTicket: number | null
+  winnerUid: string | null
+  drawnAt: string | null
+}
+
+export type Ticket = {
+  id: string
+  number: number
+  status: 'pending' | 'confirmed'
+  source: 'subscription_conversion' | 'purchase'
+  createdAt: string
+}
+
+export type JoinRaffleResponse = {
+  tickets: Ticket[]
+  count: number
+}
+
+export type BuyTicketsResponse = {
+  tickets: Ticket[]
+  paymentUrl: string | null
+}

@@ -1,0 +1,180 @@
+import type { FastifyInstance, preHandlerHookHandler } from 'fastify'
+import type { RaffleStatus } from '../../../domain/entities/Raffle'
+import { RaffleNotFoundError } from '../../../domain/errors'
+import type { IRaffleRepository } from '../../../domain/interfaces/IRaffleRepository'
+import {
+  CreateRaffleBodySchema,
+  DrawQueuedResponseSchema,
+  DrawRaffleBodySchema,
+  ErrorResponseSchema,
+  RaffleSchema,
+  UpdateRaffleBodySchema,
+} from '../schemas/raffles'
+
+export type EnqueueDrawRaffle = (data: {
+  tenantId: string
+  raffleId: string
+  contestNumber: number
+}) => Promise<void>
+
+export type AdminRouteDeps = {
+  rafflesAuthPreHandler: preHandlerHookHandler
+  requireOwner: preHandlerHookHandler
+  raffleRepository: IRaffleRepository
+  enqueueDrawRaffle: EnqueueDrawRaffle
+}
+
+function requireTenantId(headers: Record<string, unknown>): string | null {
+  const tenantId = headers['x-tenant-id']
+  return typeof tenantId === 'string' ? tenantId : null
+}
+
+export async function registerAdminRoutes(
+  app: FastifyInstance,
+  deps: AdminRouteDeps,
+): Promise<void> {
+  app.post(
+    '/raffles',
+    {
+      preHandler: [deps.rafflesAuthPreHandler, deps.requireOwner],
+      schema: {
+        body: CreateRaffleBodySchema,
+        response: { 201: RaffleSchema, 400: ErrorResponseSchema },
+      },
+    },
+    async (request, reply) => {
+      const tenantId = requireTenantId(request.headers)
+      if (!tenantId) {
+        reply.status(400).send({
+          error: {
+            code: 'MISSING_TENANT',
+            message: 'x-tenant-id header is required',
+          },
+        })
+        return
+      }
+
+      const body = request.body as {
+        title: string
+        description: string
+        prize: string
+        imageUrl: string | null
+        ticketPriceCents: number
+      }
+
+      const raffle = await deps.raffleRepository.create({
+        tenantId,
+        ...body,
+      })
+
+      reply.status(201).send({
+        id: raffle.id,
+        title: raffle.title,
+        description: raffle.description,
+        prize: raffle.prize,
+        imageUrl: raffle.imageUrl,
+        ticketPriceCents: raffle.ticketPriceCents,
+        status: raffle.status,
+        contestNumber: raffle.contestNumber,
+        winnerTicket: raffle.winnerTicket,
+        winnerUid: raffle.winnerUid,
+        drawnAt: raffle.drawnAt?.toISOString() ?? null,
+        createdAt: raffle.createdAt.toISOString(),
+      })
+    },
+  )
+
+  app.patch(
+    '/raffles/:id',
+    {
+      preHandler: [deps.rafflesAuthPreHandler, deps.requireOwner],
+      schema: {
+        body: UpdateRaffleBodySchema,
+        response: {
+          200: RaffleSchema,
+          404: ErrorResponseSchema,
+          400: ErrorResponseSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const tenantId = requireTenantId(request.headers)
+      if (!tenantId) {
+        reply.status(400).send({
+          error: {
+            code: 'MISSING_TENANT',
+            message: 'x-tenant-id header is required',
+          },
+        })
+        return
+      }
+
+      const { id } = request.params as { id: string }
+      const existing = await deps.raffleRepository.findById(tenantId, id)
+      if (!existing) throw new RaffleNotFoundError(id)
+
+      const body = request.body as Partial<{
+        title: string
+        description: string
+        prize: string
+        imageUrl: string | null
+        ticketPriceCents: number
+        status: RaffleStatus
+      }>
+
+      const raffle = await deps.raffleRepository.update(id, body)
+
+      reply.status(200).send({
+        id: raffle.id,
+        title: raffle.title,
+        description: raffle.description,
+        prize: raffle.prize,
+        imageUrl: raffle.imageUrl,
+        ticketPriceCents: raffle.ticketPriceCents,
+        status: raffle.status,
+        contestNumber: raffle.contestNumber,
+        winnerTicket: raffle.winnerTicket,
+        winnerUid: raffle.winnerUid,
+        drawnAt: raffle.drawnAt?.toISOString() ?? null,
+        createdAt: raffle.createdAt.toISOString(),
+      })
+    },
+  )
+
+  app.post(
+    '/raffles/:id/draw',
+    {
+      preHandler: [deps.rafflesAuthPreHandler, deps.requireOwner],
+      schema: {
+        body: DrawRaffleBodySchema,
+        response: {
+          202: DrawQueuedResponseSchema,
+          404: ErrorResponseSchema,
+          400: ErrorResponseSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const tenantId = requireTenantId(request.headers)
+      if (!tenantId) {
+        reply.status(400).send({
+          error: {
+            code: 'MISSING_TENANT',
+            message: 'x-tenant-id header is required',
+          },
+        })
+        return
+      }
+
+      const { id } = request.params as { id: string }
+      const existing = await deps.raffleRepository.findById(tenantId, id)
+      if (!existing) throw new RaffleNotFoundError(id)
+
+      const { contestNumber } = request.body as { contestNumber: number }
+
+      await deps.enqueueDrawRaffle({ tenantId, raffleId: id, contestNumber })
+
+      reply.status(202).send({ queued: true })
+    },
+  )
+}
