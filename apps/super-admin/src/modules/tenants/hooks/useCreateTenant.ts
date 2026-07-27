@@ -1,5 +1,6 @@
 'use client'
 
+import { ApiError } from '@/shared/services/api-client'
 import { zodResolver } from '@/shared/utils/zod-resolver'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -17,6 +18,11 @@ export function useCreateTenant() {
     onSuccess: (tenant) => {
       queryClient.invalidateQueries({ queryKey: ['tenants'] })
       router.push(`/lojistas/${tenant.id}`)
+    },
+    onError: (error) => {
+      if (error instanceof ApiError && error.code === 'SLUG_ALREADY_TAKEN') {
+        form.setError('slug', { type: 'manual', message: 'Esse slug já está em uso' })
+      }
     },
   })
 
