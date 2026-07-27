@@ -7,18 +7,25 @@ import {
 import Fastify, { type FastifyInstance } from 'fastify'
 import {
   addDomainUseCase,
+  createTenantUseCase,
   getLandingConfigUseCase,
   getMeUseCase,
+  getTenantUseCase,
+  impersonateTenantUseCase,
   listDomainsUseCase,
+  listTenantsUseCase,
   registerUserUseCase,
+  superAuthPreHandler,
   tenantAuthPreHandler,
   updateLandingConfigUseCase,
+  updateTenantStatusUseCase,
   verifyDomainUseCase,
 } from './infrastructure/http/container'
 import {
   requireAuth,
   requireOwner,
   requireSubscriber,
+  requireSuperAdmin,
 } from './infrastructure/http/proxy'
 import { registerAuthRoutes } from './infrastructure/http/routes/auth'
 import { registerCashbackProxyRoutes } from './infrastructure/http/routes/cashback'
@@ -27,6 +34,7 @@ import { registerLandingRoutes } from './infrastructure/http/routes/landing'
 import { registerRafflesProxyRoutes } from './infrastructure/http/routes/raffles'
 import { registerStoreProxyRoutes } from './infrastructure/http/routes/store'
 import { registerSubscriptionsProxyRoutes } from './infrastructure/http/routes/subscriptions'
+import { registerSuperTenantsRoutes } from './infrastructure/http/routes/super-tenants'
 import { registerTournamentsProxyRoutes } from './infrastructure/http/routes/tournaments'
 import { env } from './shared/env'
 
@@ -91,6 +99,15 @@ export async function buildApp(
     listDomainsUseCase,
     addDomainUseCase,
     verifyDomainUseCase,
+  })
+  await registerSuperTenantsRoutes(app, {
+    superAuthPreHandler,
+    requireSuperAdmin,
+    listTenantsUseCase,
+    getTenantUseCase,
+    createTenantUseCase,
+    updateTenantStatusUseCase,
+    impersonateTenantUseCase,
   })
 
   return app

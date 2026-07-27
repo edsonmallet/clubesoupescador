@@ -7,7 +7,7 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { schema } from '../../schema'
-import { domains } from '../../schema/tenants'
+import { domains, users } from '../../schema/tenants'
 import { TenantRepository } from '../tenant.repository'
 
 describe('TenantRepository', () => {
@@ -68,5 +68,50 @@ describe('TenantRepository', () => {
   it('returns null when the domain is not linked to any tenant', async () => {
     const found = await repository.findByDomain('unknown.com.br')
     expect(found).toBeNull()
+  })
+
+  it('lists all tenants', async () => {
+    const before = await repository.list()
+    await repository.create({ slug: 'list-me', name: 'List Me', ownerUid: 'owner-list' })
+
+    const after = await repository.list()
+
+    expect(after.length).toBe(before.length + 1)
+    expect(after.some((t) => t.slug === 'list-me')).toBe(true)
+  })
+
+  it('finds a tenant by id', async () => {
+    const created = await repository.create({ slug: 'by-id', name: 'By Id', ownerUid: 'owner-id' })
+
+    const found = await repository.findById(created.id)
+
+    expect(found?.slug).toBe('by-id')
+  })
+
+  it('returns null when finding by an unknown id', async () => {
+    const found = await repository.findById('00000000-0000-0000-0000-000000000000')
+    expect(found).toBeNull()
+  })
+
+  it('updates tenant status', async () => {
+    const created = await repository.create({ slug: 'to-suspend', name: 'To Suspend', ownerUid: 'owner-sus' })
+
+    const updated = await repository.updateStatus(created.id, 'suspended')
+
+    expect(updated.status).toBe('suspended')
+    const found = await repository.findById(created.id)
+    expect(found?.status).toBe('suspended')
+  })
+
+  it('counts users belonging to a tenant', async () => {
+    const created = await repository.create({ slug: 'with-users', name: 'With Users', ownerUid: 'owner-cnt' })
+    await db.insert(users).values([
+      { tenantId: created.id, uid: 'user-a', role: 'user' },
+      { tenantId: created.id, uid: 'user-b', role: 'subscriber' },
+    ])
+
+    const count = await repository.countUsers(created.id)
+
+    expect(count).toBe(2)
   })
 })
