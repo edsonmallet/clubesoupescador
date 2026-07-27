@@ -151,6 +151,32 @@ describe('billing routes', () => {
       expect(response.statusCode).toBe(401)
       expect(deps.createCheckoutUseCase.execute).not.toHaveBeenCalled()
     })
+
+    it('rejects super_admin callers (no tenant_id claim) with 400 instead of a 500', async () => {
+      const { app, deps } = await buildTestApp({
+        billingAuthPreHandler: async (request: FastifyRequest) => {
+          request.user = {
+            uid: 'super-1',
+            role: 'super_admin',
+            tenant_id: null,
+          }
+        },
+      })
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/checkout',
+        payload: {
+          planId: 'plan-1',
+          name: 'Loja da Maria',
+          cpfCnpj: '12345678909',
+        },
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(response.json().error.code).toBe('TENANT_ID_REQUIRED')
+      expect(deps.createCheckoutUseCase.execute).not.toHaveBeenCalled()
+    })
   })
 
   describe('GET /me', () => {
@@ -202,6 +228,25 @@ describe('billing routes', () => {
       const response = await app.inject({ method: 'GET', url: '/me' })
 
       expect(response.statusCode).toBe(403)
+    })
+
+    it('rejects super_admin callers (no tenant_id claim) with 400 instead of a 500', async () => {
+      const { app, deps } = await buildTestApp({
+        billingAuthPreHandler: async (request: FastifyRequest) => {
+          request.user = {
+            uid: 'super-1',
+            role: 'super_admin',
+            tenant_id: null,
+          }
+        },
+      })
+
+      const response = await app.inject({ method: 'GET', url: '/me' })
+
+      expect(response.statusCode).toBe(400)
+      expect(response.json().error.code).toBe('TENANT_ID_REQUIRED')
+      expect(vi.mocked(deps.tenantBillingRepository.findByTenantId)).not
+        .toHaveBeenCalled()
     })
   })
 

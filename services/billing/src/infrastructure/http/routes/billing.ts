@@ -32,6 +32,7 @@ export async function registerBillingRoutes(
         body: CheckoutBodySchema,
         response: {
           200: CheckoutResponseSchema,
+          400: ErrorResponseSchema,
           404: ErrorResponseSchema,
           409: ErrorResponseSchema,
         },
@@ -40,8 +41,20 @@ export async function registerBillingRoutes(
     async (request, reply) => {
       const user = request.user as AuthenticatedUser
       // Never accept tenantId from the request body — it always comes from
-      // the authenticated caller's own claim.
-      const tenantId = user.tenant_id as string
+      // the authenticated caller's own claim. A super_admin's tenant_id claim
+      // is always null (requireOwner allows super_admin through), so guard
+      // against it explicitly instead of letting a NULL tenant_id reach the
+      // database as an opaque 500.
+      if (!user.tenant_id) {
+        reply.status(400).send({
+          error: {
+            code: 'TENANT_ID_REQUIRED',
+            message: 'This action requires a tenant-scoped account',
+          },
+        })
+        return
+      }
+      const tenantId = user.tenant_id
       const { planId, name, cpfCnpj } = request.body as {
         planId: string
         name: string
@@ -65,12 +78,26 @@ export async function registerBillingRoutes(
     {
       preHandler: [deps.billingAuthPreHandler, deps.requireOwner],
       schema: {
-        response: { 200: TenantBillingSchema, 404: ErrorResponseSchema },
+        response: {
+          200: TenantBillingSchema,
+          400: ErrorResponseSchema,
+          404: ErrorResponseSchema,
+        },
       },
     },
     async (request, reply) => {
       const user = request.user as AuthenticatedUser
-      const tenantId = user.tenant_id as string
+
+      if (!user.tenant_id) {
+        reply.status(400).send({
+          error: {
+            code: 'TENANT_ID_REQUIRED',
+            message: 'This action requires a tenant-scoped account',
+          },
+        })
+        return
+      }
+      const tenantId = user.tenant_id
 
       const tenantBilling =
         await deps.tenantBillingRepository.findByTenantId(tenantId)
