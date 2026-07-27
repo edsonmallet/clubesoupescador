@@ -2,10 +2,10 @@
 
 import { signInWithCustomToken } from 'firebase/auth'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { getFirebaseAuth } from '@/shared/services/firebase'
 
-export default function ImpersonatePage() {
+function ImpersonateContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [error, setError] = useState(false)
@@ -27,4 +27,12 @@ export default function ImpersonatePage() {
   }
 
   return <p className="p-8 text-sm text-slate-600">Entrando...</p>
+}
+
+export default function ImpersonatePage() {
+  return (
+    <Suspense fallback={<p className="p-8 text-sm text-slate-600">Entrando...</p>}>
+      <ImpersonateContent />
+    </Suspense>
+  )
 }
