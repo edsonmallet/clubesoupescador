@@ -6,11 +6,12 @@ import { useTenant } from '../hooks/useTenant'
 import { useUpdateTenantStatus } from '../hooks/useUpdateTenantStatus'
 
 export function TenantDetail({ tenantId }: { tenantId: string }) {
-  const { data, isLoading } = useTenant(tenantId)
+  const { data, isLoading, isError } = useTenant(tenantId)
   const updateStatus = useUpdateTenantStatus(tenantId)
   const impersonate = useImpersonateTenant(tenantId)
 
   if (isLoading) return <p>Carregando...</p>
+  if (isError) return <p>Erro ao carregar lojista.</p>
   if (!data) return <p>Lojista não encontrado.</p>
 
   const { tenant, memberCount } = data

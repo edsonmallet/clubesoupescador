@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { useTenants } from '../hooks/useTenants'
 
 export function TenantTable() {
-  const { data, isLoading } = useTenants()
+  const { data, isLoading, isError } = useTenants()
 
   if (isLoading) return <p>Carregando lojistas...</p>
+  if (isError) return <p>Erro ao carregar lojistas.</p>
 
   return (
     <table className="w-full border-collapse text-sm">
