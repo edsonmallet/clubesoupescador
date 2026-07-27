@@ -12,8 +12,10 @@ export type CreateTenantBillingDto = {
 }
 
 export type UpdateAsaasDetailsDto = {
+  planId: string
   asaasCustomerId: string | null
   asaasSubscriptionId: string | null
+  status: TenantBillingStatus
 }
 
 export interface ITenantBillingRepository {
