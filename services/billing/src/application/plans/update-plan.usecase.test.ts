@@ -3,7 +3,9 @@ import { SaasPlan } from '../../domain/entities/saas-plan'
 import { PlanNotFoundError } from '../../domain/errors'
 import { UpdatePlanUseCase } from './update-plan.usecase'
 
-function makePlan(overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {}) {
+function makePlan(
+  overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {},
+) {
   return SaasPlan.create({
     id: 'plan-1',
     name: 'Starter',

@@ -20,7 +20,10 @@ describe('updateTenantBilling', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const { updateTenantBilling } = await import('./client')
-    await updateTenantBilling('tenant-1', { status: 'active', planId: 'plan-1' })
+    await updateTenantBilling('tenant-1', {
+      status: 'active',
+      planId: 'plan-1',
+    })
 
     expect(fetchMock).toHaveBeenCalledWith(
       'http://bff.local/internal/tenants/tenant-1/billing',
@@ -36,9 +39,11 @@ describe('updateTenantBilling', () => {
   })
 
   it('logs and does not throw when the BFF responds with a non-2xx status', async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValue({ ok: false, status: 500, statusText: 'Internal Error' })
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Error',
+    })
     vi.stubGlobal('fetch', fetchMock)
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 

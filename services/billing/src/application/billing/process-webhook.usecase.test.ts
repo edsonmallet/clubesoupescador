@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { TenantBilling } from '../../domain/entities/tenant-billing'
 import {
-  extractAsaasSubscriptionId,
   ProcessWebhookUseCase,
+  extractAsaasSubscriptionId,
 } from './process-webhook.usecase'
 
 function makeTenantBilling(
@@ -45,7 +45,10 @@ describe('extractAsaasSubscriptionId', () => {
 
   it('reads the subscription id from a string subscription field', () => {
     expect(
-      extractAsaasSubscriptionId({ event: 'SUBSCRIPTION_DELETED', subscription: 'asub_2' }),
+      extractAsaasSubscriptionId({
+        event: 'SUBSCRIPTION_DELETED',
+        subscription: 'asub_2',
+      }),
     ).toBe('asub_2')
   })
 
@@ -59,7 +62,9 @@ describe('extractAsaasSubscriptionId', () => {
   })
 
   it('returns null when neither field is present', () => {
-    expect(extractAsaasSubscriptionId({ event: 'ACCOUNT_STATUS_UPDATED' })).toBeNull()
+    expect(
+      extractAsaasSubscriptionId({ event: 'ACCOUNT_STATUS_UPDATED' }),
+    ).toBeNull()
   })
 })
 
@@ -68,10 +73,15 @@ describe('ProcessWebhookUseCase', () => {
     const tenantBillingRepository = makeRepository()
     const bffClient = { updateTenantBilling: vi.fn() }
 
-    const usecase = new ProcessWebhookUseCase(tenantBillingRepository, bffClient)
+    const usecase = new ProcessWebhookUseCase(
+      tenantBillingRepository,
+      bffClient,
+    )
     await usecase.execute({ event: 'ACCOUNT_STATUS_UPDATED' })
 
-    expect(tenantBillingRepository.findByAsaasSubscriptionId).not.toHaveBeenCalled()
+    expect(
+      tenantBillingRepository.findByAsaasSubscriptionId,
+    ).not.toHaveBeenCalled()
     expect(bffClient.updateTenantBilling).not.toHaveBeenCalled()
   })
 
@@ -81,7 +91,10 @@ describe('ProcessWebhookUseCase', () => {
     })
     const bffClient = { updateTenantBilling: vi.fn() }
 
-    const usecase = new ProcessWebhookUseCase(tenantBillingRepository, bffClient)
+    const usecase = new ProcessWebhookUseCase(
+      tenantBillingRepository,
+      bffClient,
+    )
     await usecase.execute({
       event: 'PAYMENT_CONFIRMED',
       payment: { subscription: 'does-not-exist' },
@@ -98,13 +111,19 @@ describe('ProcessWebhookUseCase', () => {
     })
     const bffClient = { updateTenantBilling: vi.fn() }
 
-    const usecase = new ProcessWebhookUseCase(tenantBillingRepository, bffClient)
+    const usecase = new ProcessWebhookUseCase(
+      tenantBillingRepository,
+      bffClient,
+    )
     await usecase.execute({
       event: 'PAYMENT_CONFIRMED',
       payment: { subscription: 'asub_1' },
     })
 
-    expect(tenantBillingRepository.updateStatus).toHaveBeenCalledWith('tb-1', 'active')
+    expect(tenantBillingRepository.updateStatus).toHaveBeenCalledWith(
+      'tb-1',
+      'active',
+    )
     expect(bffClient.updateTenantBilling).toHaveBeenCalledWith('tenant-1', {
       status: 'active',
       planId: 'plan-1',
@@ -118,17 +137,27 @@ describe('ProcessWebhookUseCase', () => {
     })
     const bffClient = { updateTenantBilling: vi.fn() }
 
-    const usecase = new ProcessWebhookUseCase(tenantBillingRepository, bffClient)
+    const usecase = new ProcessWebhookUseCase(
+      tenantBillingRepository,
+      bffClient,
+    )
     await usecase.execute({
       event: 'PAYMENT_OVERDUE',
       payment: { subscription: 'asub_1' },
     })
 
-    expect(tenantBillingRepository.updateStatus).toHaveBeenCalledWith('tb-1', 'overdue')
+    expect(tenantBillingRepository.updateStatus).toHaveBeenCalledWith(
+      'tb-1',
+      'overdue',
+    )
     expect(bffClient.updateTenantBilling).not.toHaveBeenCalled()
   })
 
-  it.each(['SUBSCRIPTION_DELETED', 'SUBSCRIPTION_INACTIVATED', 'SUBSCRIPTION_CANCELLED'])(
+  it.each([
+    'SUBSCRIPTION_DELETED',
+    'SUBSCRIPTION_INACTIVATED',
+    'SUBSCRIPTION_CANCELLED',
+  ])(
     'cancels the tenant billing and notifies the BFF to suspend on %s',
     async (event) => {
       const tenantBilling = makeTenantBilling({ status: 'active' })
@@ -137,13 +166,19 @@ describe('ProcessWebhookUseCase', () => {
       })
       const bffClient = { updateTenantBilling: vi.fn() }
 
-      const usecase = new ProcessWebhookUseCase(tenantBillingRepository, bffClient)
+      const usecase = new ProcessWebhookUseCase(
+        tenantBillingRepository,
+        bffClient,
+      )
       await usecase.execute({
         event,
         subscription: { id: 'asub_1' },
       })
 
-      expect(tenantBillingRepository.updateStatus).toHaveBeenCalledWith('tb-1', 'cancelled')
+      expect(tenantBillingRepository.updateStatus).toHaveBeenCalledWith(
+        'tb-1',
+        'cancelled',
+      )
       expect(bffClient.updateTenantBilling).toHaveBeenCalledWith('tenant-1', {
         status: 'suspended',
       })
@@ -157,7 +192,10 @@ describe('ProcessWebhookUseCase', () => {
     })
     const bffClient = { updateTenantBilling: vi.fn() }
 
-    const usecase = new ProcessWebhookUseCase(tenantBillingRepository, bffClient)
+    const usecase = new ProcessWebhookUseCase(
+      tenantBillingRepository,
+      bffClient,
+    )
     await usecase.execute({
       event: 'ACCOUNT_STATUS_UPDATED',
       payment: { subscription: 'asub_1' },

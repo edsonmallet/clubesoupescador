@@ -7,7 +7,9 @@ import {
 } from '../../domain/errors'
 import { CreateCheckoutUseCase } from './create-checkout.usecase'
 
-function makePlan(overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {}) {
+function makePlan(
+  overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {},
+) {
   return SaasPlan.create({
     id: 'plan-1',
     name: 'Starter',
@@ -363,9 +365,7 @@ describe('CreateCheckoutUseCase', () => {
       const result = await usecase.execute(makeCheckoutInput())
 
       expect(tenantBillingRepository.create).not.toHaveBeenCalled()
-      expect(
-        asaasClient.findCustomerByExternalReference,
-      ).not.toHaveBeenCalled()
+      expect(asaasClient.findCustomerByExternalReference).not.toHaveBeenCalled()
       expect(asaasClient.createCustomer).not.toHaveBeenCalled()
       expect(asaasClient.createSubscription).toHaveBeenCalledWith(
         expect.objectContaining({ customer: 'cus_prior' }),

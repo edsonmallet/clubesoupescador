@@ -2,7 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { SaasPlan } from '../../domain/entities/saas-plan'
 import { ListPlansUseCase } from './list-plans.usecase'
 
-function makePlan(overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {}) {
+function makePlan(
+  overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {},
+) {
   return SaasPlan.create({
     id: 'plan-1',
     name: 'Starter',
@@ -16,10 +18,12 @@ function makePlan(overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {}
 describe('ListPlansUseCase', () => {
   it('returns only active plans', async () => {
     const saasPlanRepository = {
-      list: vi.fn().mockResolvedValue([
-        makePlan({ id: 'plan-1', active: true }),
-        makePlan({ id: 'plan-2', active: false }),
-      ]),
+      list: vi
+        .fn()
+        .mockResolvedValue([
+          makePlan({ id: 'plan-1', active: true }),
+          makePlan({ id: 'plan-2', active: false }),
+        ]),
       findById: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),

@@ -3,7 +3,9 @@ import { SaasPlan } from '../../domain/entities/saas-plan'
 import { TenantBilling } from '../../domain/entities/tenant-billing'
 import { GetBillingOverviewUseCase } from './get-billing-overview.usecase'
 
-function makePlan(overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {}) {
+function makePlan(
+  overrides: Partial<Parameters<typeof SaasPlan.create>[0]> = {},
+) {
   return SaasPlan.create({
     id: 'plan-1',
     name: 'Starter',
@@ -60,10 +62,12 @@ describe('GetBillingOverviewUseCase', () => {
       ]),
     }
     const saasPlanRepository = {
-      list: vi.fn().mockResolvedValue([
-        makePlan({ id: 'plan-1', name: 'Starter', priceCents: 9900 }),
-        makePlan({ id: 'plan-2', name: 'Pro', priceCents: 19900 }),
-      ]),
+      list: vi
+        .fn()
+        .mockResolvedValue([
+          makePlan({ id: 'plan-1', name: 'Starter', priceCents: 9900 }),
+          makePlan({ id: 'plan-2', name: 'Pro', priceCents: 19900 }),
+        ]),
       findById: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
@@ -76,9 +80,24 @@ describe('GetBillingOverviewUseCase', () => {
     const result = await usecase.execute()
 
     expect(result.items).toEqual([
-      { tenantId: 'tenant-1', planName: 'Starter', priceCents: 9900, status: 'active' },
-      { tenantId: 'tenant-2', planName: 'Pro', priceCents: 19900, status: 'overdue' },
-      { tenantId: 'tenant-3', planName: 'Starter', priceCents: 9900, status: 'cancelled' },
+      {
+        tenantId: 'tenant-1',
+        planName: 'Starter',
+        priceCents: 9900,
+        status: 'active',
+      },
+      {
+        tenantId: 'tenant-2',
+        planName: 'Pro',
+        priceCents: 19900,
+        status: 'overdue',
+      },
+      {
+        tenantId: 'tenant-3',
+        planName: 'Starter',
+        priceCents: 9900,
+        status: 'cancelled',
+      },
     ])
     expect(result.summary).toEqual({ mrrCents: 9900, overdueCount: 1 })
   })
@@ -140,6 +159,9 @@ describe('GetBillingOverviewUseCase', () => {
     )
     const result = await usecase.execute()
 
-    expect(result).toEqual({ items: [], summary: { mrrCents: 0, overdueCount: 0 } })
+    expect(result).toEqual({
+      items: [],
+      summary: { mrrCents: 0, overdueCount: 0 },
+    })
   })
 })
