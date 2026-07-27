@@ -1,8 +1,8 @@
 import { setRole } from '@clube/firebase-utils'
 import type { Tenant } from '../../domain/entities/tenant'
 import { SlugAlreadyTakenError } from '../../domain/errors/slug-already-taken.error'
-import type { IUserRepository } from '../../domain/interfaces/IUserRepository'
 import type { ITenantRepository } from '../../domain/interfaces/ITenantRepository'
+import type { IUserRepository } from '../../domain/interfaces/IUserRepository'
 
 export type CreateTenantInput = {
   slug: string

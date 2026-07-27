@@ -1,11 +1,11 @@
 'use client'
 
+import { getFirebaseAuth } from '@/shared/services/firebase'
+import { zodResolver } from '@/shared/utils/zod-resolver'
 import { useMutation } from '@tanstack/react-query'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { getFirebaseAuth } from '@/shared/services/firebase'
-import { zodResolver } from '@/shared/utils/zod-resolver'
 import { type SignInInput, signInSchema } from '../schemas/auth.schema'
 
 export function useSignIn() {

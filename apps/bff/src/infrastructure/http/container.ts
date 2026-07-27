@@ -2,6 +2,11 @@ import {
   createFirebaseAuthPreHandler,
   createTenantAuthPreHandler,
 } from '@clube/fastify-plugins'
+import { CreateTenantUseCase } from '../../application/super-tenants/create-tenant.usecase'
+import { GetTenantUseCase } from '../../application/super-tenants/get-tenant.usecase'
+import { ImpersonateTenantUseCase } from '../../application/super-tenants/impersonate-tenant.usecase'
+import { ListTenantsUseCase } from '../../application/super-tenants/list-tenants.usecase'
+import { UpdateTenantStatusUseCase } from '../../application/super-tenants/update-tenant-status.usecase'
 import { AddDomainUseCase } from '../../application/tenants/add-domain.usecase'
 import { GetLandingConfigUseCase } from '../../application/tenants/get-landing-config.usecase'
 import { GetMeUseCase } from '../../application/tenants/get-me.usecase'
@@ -9,11 +14,6 @@ import { ListDomainsUseCase } from '../../application/tenants/list-domains.useca
 import { RegisterUserUseCase } from '../../application/tenants/register-user.usecase'
 import { UpdateLandingConfigUseCase } from '../../application/tenants/update-landing-config.usecase'
 import { VerifyDomainUseCase } from '../../application/tenants/verify-domain.usecase'
-import { CreateTenantUseCase } from '../../application/super-tenants/create-tenant.usecase'
-import { GetTenantUseCase } from '../../application/super-tenants/get-tenant.usecase'
-import { ImpersonateTenantUseCase } from '../../application/super-tenants/impersonate-tenant.usecase'
-import { ListTenantsUseCase } from '../../application/super-tenants/list-tenants.usecase'
-import { UpdateTenantStatusUseCase } from '../../application/super-tenants/update-tenant-status.usecase'
 import { db } from '../db'
 import { DomainRepository } from '../db/repositories/domain.repository'
 import { LandingConfigRepository } from '../db/repositories/landing-config.repository'
@@ -46,6 +46,13 @@ export const superAuthPreHandler = createFirebaseAuthPreHandler()
 
 export const listTenantsUseCase = new ListTenantsUseCase(tenantRepository)
 export const getTenantUseCase = new GetTenantUseCase(tenantRepository)
-export const createTenantUseCase = new CreateTenantUseCase(tenantRepository, userRepository)
-export const updateTenantStatusUseCase = new UpdateTenantStatusUseCase(tenantRepository)
-export const impersonateTenantUseCase = new ImpersonateTenantUseCase(tenantRepository)
+export const createTenantUseCase = new CreateTenantUseCase(
+  tenantRepository,
+  userRepository,
+)
+export const updateTenantStatusUseCase = new UpdateTenantStatusUseCase(
+  tenantRepository,
+)
+export const impersonateTenantUseCase = new ImpersonateTenantUseCase(
+  tenantRepository,
+)

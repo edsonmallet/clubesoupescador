@@ -1,6 +1,6 @@
+import { Providers } from '@/shared/components/Providers'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
-import { Providers } from '@/shared/components/Providers'
 import './globals.css'
 
 export const metadata: Metadata = {

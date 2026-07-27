@@ -16,8 +16,15 @@ export function SignInForm() {
         <label htmlFor="email" className="text-sm font-medium">
           Email
         </label>
-        <Input id="email" type="email" autoComplete="email" {...register('email')} />
-        {errors.email && <span className="text-sm text-red-600">{errors.email.message}</span>}
+        <Input
+          id="email"
+          type="email"
+          autoComplete="email"
+          {...register('email')}
+        />
+        {errors.email && (
+          <span className="text-sm text-red-600">{errors.email.message}</span>
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -31,11 +38,15 @@ export function SignInForm() {
           {...register('password')}
         />
         {errors.password && (
-          <span className="text-sm text-red-600">{errors.password.message}</span>
+          <span className="text-sm text-red-600">
+            {errors.password.message}
+          </span>
         )}
       </div>
 
-      {mutation.isError && <p className="text-sm text-red-600">Email ou senha inválidos.</p>}
+      {mutation.isError && (
+        <p className="text-sm text-red-600">Email ou senha inválidos.</p>
+      )}
 
       <Button type="submit" disabled={mutation.isPending}>
         {mutation.isPending ? 'Entrando...' : 'Entrar'}

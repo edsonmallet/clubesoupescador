@@ -1,9 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { type ReactNode, useEffect } from 'react'
 import { SuperAdminLayout } from '@/shared/components/SuperAdminLayout'
 import { useAuthStore } from '@/shared/store/auth.store'
+import { useRouter } from 'next/navigation'
+import { type ReactNode, useEffect } from 'react'
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const router = useRouter()

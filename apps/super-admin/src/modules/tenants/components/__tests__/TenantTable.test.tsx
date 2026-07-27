@@ -9,8 +9,12 @@ vi.mock('../../services/tenants.service', () => ({
 }))
 
 function renderWithClient(ui: React.ReactElement) {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>)
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
+  )
 }
 
 describe('TenantTable', () => {

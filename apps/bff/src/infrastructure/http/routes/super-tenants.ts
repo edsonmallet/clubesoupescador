@@ -89,7 +89,12 @@ export async function registerSuperTenantsRoutes(
     '/v1/super/tenants/:id',
     {
       preHandler,
-      schema: { response: { 200: TenantWithMemberCountSchema, 404: ErrorResponseSchema } },
+      schema: {
+        response: {
+          200: TenantWithMemberCountSchema,
+          404: ErrorResponseSchema,
+        },
+      },
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }
@@ -119,7 +124,9 @@ export async function registerSuperTenantsRoutes(
     '/v1/super/tenants/:id/impersonate',
     {
       preHandler,
-      schema: { response: { 200: ImpersonateResponseSchema, 404: ErrorResponseSchema } },
+      schema: {
+        response: { 200: ImpersonateResponseSchema, 404: ErrorResponseSchema },
+      },
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }

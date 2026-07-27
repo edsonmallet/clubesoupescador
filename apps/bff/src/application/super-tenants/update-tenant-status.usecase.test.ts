@@ -34,7 +34,10 @@ describe('UpdateTenantStatusUseCase', () => {
     const result = await useCase.execute('tenant-1', 'suspended')
 
     expect(result.status).toBe('suspended')
-    expect(repository.updateStatus).toHaveBeenCalledWith('tenant-1', 'suspended')
+    expect(repository.updateStatus).toHaveBeenCalledWith(
+      'tenant-1',
+      'suspended',
+    )
   })
 
   it('throws TenantNotFoundError when the tenant does not exist', async () => {
@@ -49,9 +52,9 @@ describe('UpdateTenantStatusUseCase', () => {
     }
     const useCase = new UpdateTenantStatusUseCase(repository)
 
-    await expect(useCase.execute('missing', 'suspended')).rejects.toBeInstanceOf(
-      TenantNotFoundError,
-    )
+    await expect(
+      useCase.execute('missing', 'suspended'),
+    ).rejects.toBeInstanceOf(TenantNotFoundError)
     expect(repository.updateStatus).not.toHaveBeenCalled()
   })
 })

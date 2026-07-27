@@ -5,8 +5,8 @@ vi.mock('@clube/firebase-utils', () => ({ setRole }))
 
 import { Tenant } from '../../domain/entities/tenant'
 import { SlugAlreadyTakenError } from '../../domain/errors/slug-already-taken.error'
-import type { IUserRepository } from '../../domain/interfaces/IUserRepository'
 import type { ITenantRepository } from '../../domain/interfaces/ITenantRepository'
+import type { IUserRepository } from '../../domain/interfaces/IUserRepository'
 import { CreateTenantUseCase } from './create-tenant.usecase'
 
 function fakeTenant(): Tenant {
@@ -44,7 +44,11 @@ describe('CreateTenantUseCase', () => {
     }
     const useCase = new CreateTenantUseCase(tenantRepository, userRepository)
 
-    const tenant = await useCase.execute({ slug: 'acme', name: 'Acme', ownerUid: 'owner-1' })
+    const tenant = await useCase.execute({
+      slug: 'acme',
+      name: 'Acme',
+      ownerUid: 'owner-1',
+    })
 
     expect(tenant.id).toBe('tenant-1')
     expect(tenantRepository.create).toHaveBeenCalledWith({
@@ -71,7 +75,10 @@ describe('CreateTenantUseCase', () => {
       updateStatus: vi.fn(),
       countUsers: vi.fn(),
     }
-    const userRepository: IUserRepository = { findByUid: vi.fn(), create: vi.fn() }
+    const userRepository: IUserRepository = {
+      findByUid: vi.fn(),
+      create: vi.fn(),
+    }
     const useCase = new CreateTenantUseCase(tenantRepository, userRepository)
 
     await expect(

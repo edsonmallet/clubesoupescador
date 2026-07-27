@@ -23,10 +23,19 @@ describe('ListTenantsUseCase', () => {
       findBySlug: vi.fn(),
       findByDomain: vi.fn(),
       create: vi.fn(),
-      list: vi.fn().mockResolvedValue([fakeTenant('t1', 'acme'), fakeTenant('t2', 'beta')]),
+      list: vi
+        .fn()
+        .mockResolvedValue([
+          fakeTenant('t1', 'acme'),
+          fakeTenant('t2', 'beta'),
+        ]),
       findById: vi.fn(),
       updateStatus: vi.fn(),
-      countUsers: vi.fn().mockImplementation((id: string) => Promise.resolve(id === 't1' ? 3 : 0)),
+      countUsers: vi
+        .fn()
+        .mockImplementation((id: string) =>
+          Promise.resolve(id === 't1' ? 3 : 0),
+        ),
     }
     const useCase = new ListTenantsUseCase(repository)
 

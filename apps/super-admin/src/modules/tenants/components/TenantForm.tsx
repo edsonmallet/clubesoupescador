@@ -17,7 +17,9 @@ export function TenantForm() {
           Nome da loja
         </label>
         <Input id="name" {...register('name')} />
-        {errors.name && <span className="text-sm text-red-600">{errors.name.message}</span>}
+        {errors.name && (
+          <span className="text-sm text-red-600">{errors.name.message}</span>
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -25,7 +27,9 @@ export function TenantForm() {
           Slug (subdomínio)
         </label>
         <Input id="slug" placeholder="acme" {...register('slug')} />
-        {errors.slug && <span className="text-sm text-red-600">{errors.slug.message}</span>}
+        {errors.slug && (
+          <span className="text-sm text-red-600">{errors.slug.message}</span>
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -34,7 +38,9 @@ export function TenantForm() {
         </label>
         <Input id="ownerUid" {...register('ownerUid')} />
         {errors.ownerUid && (
-          <span className="text-sm text-red-600">{errors.ownerUid.message}</span>
+          <span className="text-sm text-red-600">
+            {errors.ownerUid.message}
+          </span>
         )}
       </div>
 
@@ -49,7 +55,9 @@ export function TenantForm() {
       </div>
 
       {mutation.isError && (
-        <p className="text-sm text-red-600">Não foi possível criar o lojista.</p>
+        <p className="text-sm text-red-600">
+          Não foi possível criar o lojista.
+        </p>
       )}
 
       <Button type="submit" disabled={mutation.isPending}>

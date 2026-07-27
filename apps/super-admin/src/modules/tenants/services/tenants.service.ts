@@ -4,7 +4,8 @@ import type { SuperTenant, TenantWithMemberCount } from '../types/tenant'
 
 export const tenantsService = {
   list: () => apiClient.get<TenantWithMemberCount[]>('/v1/super/tenants'),
-  getById: (id: string) => apiClient.get<TenantWithMemberCount>(`/v1/super/tenants/${id}`),
+  getById: (id: string) =>
+    apiClient.get<TenantWithMemberCount>(`/v1/super/tenants/${id}`),
   create: (data: CreateTenantInput) =>
     apiClient.post<SuperTenant>('/v1/super/tenants', {
       ...data,

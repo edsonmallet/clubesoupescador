@@ -1,9 +1,9 @@
 'use client'
 
+import { getFirebaseAuth } from '@/shared/services/firebase'
 import { signInWithCustomToken } from 'firebase/auth'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
-import { getFirebaseAuth } from '@/shared/services/firebase'
 
 function ImpersonateContent() {
   const router = useRouter()
@@ -23,7 +23,11 @@ function ImpersonateContent() {
   }, [searchParams, router])
 
   if (error) {
-    return <p className="p-8 text-sm text-red-600">Não foi possível autenticar. Peça um novo link ao super admin.</p>
+    return (
+      <p className="p-8 text-sm text-red-600">
+        Não foi possível autenticar. Peça um novo link ao super admin.
+      </p>
+    )
   }
 
   return <p className="p-8 text-sm text-slate-600">Entrando...</p>
@@ -31,7 +35,9 @@ function ImpersonateContent() {
 
 export default function ImpersonatePage() {
   return (
-    <Suspense fallback={<p className="p-8 text-sm text-slate-600">Entrando...</p>}>
+    <Suspense
+      fallback={<p className="p-8 text-sm text-slate-600">Entrando...</p>}
+    >
       <ImpersonateContent />
     </Suspense>
   )

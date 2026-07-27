@@ -12,15 +12,21 @@ export type ImpersonateResult = {
 export class ImpersonateTenantUseCase {
   constructor(private readonly tenantRepository: ITenantRepository) {}
 
-  async execute(tenantId: string, superAdminUid: string): Promise<ImpersonateResult> {
+  async execute(
+    tenantId: string,
+    superAdminUid: string,
+  ): Promise<ImpersonateResult> {
     const tenant = await this.tenantRepository.findById(tenantId)
     if (!tenant) {
       throw new TenantNotFoundError(tenantId)
     }
 
-    const token = await getAuth(getFirebaseApp()).createCustomToken(tenant.ownerUid, {
-      impersonated_by: superAdminUid,
-    })
+    const token = await getAuth(getFirebaseApp()).createCustomToken(
+      tenant.ownerUid,
+      {
+        impersonated_by: superAdminUid,
+      },
+    )
 
     return { token, ownerUid: tenant.ownerUid, slug: tenant.slug }
   }

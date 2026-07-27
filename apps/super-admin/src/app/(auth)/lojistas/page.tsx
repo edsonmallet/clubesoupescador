@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { Button } from '@clube/ui'
 import { TenantTable } from '@/modules/tenants/components/TenantTable'
+import { Button } from '@clube/ui'
+import Link from 'next/link'
 
 export default function LojistasPage() {
   return (

@@ -49,7 +49,11 @@ describe('ImpersonateTenantUseCase', () => {
 
     const result = await useCase.execute('tenant-1', 'super-admin-uid')
 
-    expect(result).toEqual({ token: 'custom-token-123', ownerUid: 'owner-1', slug: 'acme' })
+    expect(result).toEqual({
+      token: 'custom-token-123',
+      ownerUid: 'owner-1',
+      slug: 'acme',
+    })
     expect(createCustomToken).toHaveBeenCalledWith('owner-1', {
       impersonated_by: 'super-admin-uid',
     })
@@ -67,9 +71,9 @@ describe('ImpersonateTenantUseCase', () => {
     }
     const useCase = new ImpersonateTenantUseCase(repository)
 
-    await expect(useCase.execute('missing', 'super-admin-uid')).rejects.toBeInstanceOf(
-      TenantNotFoundError,
-    )
+    await expect(
+      useCase.execute('missing', 'super-admin-uid'),
+    ).rejects.toBeInstanceOf(TenantNotFoundError)
     expect(createCustomToken).not.toHaveBeenCalled()
   })
 })

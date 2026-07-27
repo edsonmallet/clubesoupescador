@@ -49,6 +49,8 @@ describe('GetTenantUseCase', () => {
     }
     const useCase = new GetTenantUseCase(repository)
 
-    await expect(useCase.execute('missing')).rejects.toBeInstanceOf(TenantNotFoundError)
+    await expect(useCase.execute('missing')).rejects.toBeInstanceOf(
+      TenantNotFoundError,
+    )
   })
 })
