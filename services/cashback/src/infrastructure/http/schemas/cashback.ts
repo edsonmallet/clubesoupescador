@@ -45,6 +45,11 @@ export const UpdateConfigBodySchema = Type.Object({
   expiryMonths: Type.Number({ minimum: 1 }),
 })
 
+export const CashbackSummaryResponseSchema = Type.Object({
+  totalGrantedCents: Type.Number(),
+  totalRedeemedCents: Type.Number(),
+})
+
 export const ErrorResponseSchema = Type.Object({
   error: Type.Object({ code: Type.String(), message: Type.String() }),
 })

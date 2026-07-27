@@ -62,6 +62,11 @@ export const AdminUpdateOrderBodySchema = Type.Object({
   shippingLabelUrl: Type.Optional(Type.String()),
 })
 
+export const OrdersSummaryResponseSchema = Type.Object({
+  revenueCentsThisMonth: Type.Number(),
+  pendingOrders: Type.Number(),
+})
+
 export const ErrorResponseSchema = Type.Object({
   error: Type.Object({ code: Type.String(), message: Type.String() }),
 })

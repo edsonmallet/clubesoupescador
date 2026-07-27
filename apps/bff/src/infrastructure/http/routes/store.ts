@@ -245,4 +245,15 @@ export async function registerStoreProxyRoutes(
       await forward(request, reply, deps, `/products/${id}`)
     },
   )
+
+  app.get(
+    '/v1/admin/store-summary',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/admin/summary')
+    },
+  )
 }

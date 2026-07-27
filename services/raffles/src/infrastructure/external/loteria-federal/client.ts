@@ -6,12 +6,12 @@ export type LoteriaFederalResult = {
 }
 
 export class LoteriaFederalClient {
-  async getResult(contestNumber: number): Promise<LoteriaFederalResult> {
-    const response = await fetch(`${BASE_URL}/federal/${contestNumber}`)
+  async getResult(game: string, contestNumber: number): Promise<LoteriaFederalResult> {
+    const response = await fetch(`${BASE_URL}/${game}/${contestNumber}`)
 
     if (!response.ok) {
       throw new Error(
-        `Loteria Federal API error: ${response.status} ${response.statusText}`,
+        `Loteria Caixa API error (${game}): ${response.status} ${response.statusText}`,
       )
     }
 

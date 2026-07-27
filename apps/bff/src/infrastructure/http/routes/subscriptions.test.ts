@@ -19,6 +19,13 @@ function buildTestApp(overrides: Partial<SubscriptionsProxyDeps> = {}) {
         tenant_id: 'tenant-1',
       }
     },
+    requireOwner: async (request: FastifyRequest) => {
+      request.user = {
+        uid: 'owner-uid-1',
+        role: 'store_owner',
+        tenant_id: 'tenant-1',
+      }
+    },
     ...overrides,
   }
   return { app, deps }

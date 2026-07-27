@@ -8,6 +8,7 @@ import {
   ErrorResponseSchema,
   ListOrdersResponseSchema,
   OrderSchema,
+  OrdersSummaryResponseSchema,
 } from '../schemas/orders'
 import { AdminListProductsResponseSchema } from '../schemas/products'
 
@@ -93,7 +94,10 @@ export async function registerAdminRoutes(
       schema: {
         querystring: {
           type: 'object',
-          properties: { page: { type: 'number', default: 1 } },
+          properties: {
+            page: { type: 'number', default: 1 },
+            uid: { type: 'string' },
+          },
         },
         response: { 200: ListOrdersResponseSchema, 400: ErrorResponseSchema },
       },
@@ -110,10 +114,10 @@ export async function registerAdminRoutes(
         return
       }
 
-      const { page = 1 } = request.query as { page?: number }
+      const { page = 1, uid } = request.query as { page?: number; uid?: string }
       const result = await deps.orderRepository.findMany(
         tenantId,
-        null,
+        uid ?? null,
         page,
         20,
       )
@@ -202,6 +206,29 @@ export async function registerAdminRoutes(
         address: order.address,
         createdAt: order.createdAt.toISOString(),
       })
+    },
+  )
+
+  app.get(
+    '/admin/summary',
+    {
+      preHandler: [deps.storeAuthPreHandler, deps.requireOwner],
+      schema: { response: { 200: OrdersSummaryResponseSchema, 400: ErrorResponseSchema } },
+    },
+    async (request, reply) => {
+      const tenantId = requireTenantId(request.headers)
+      if (!tenantId) {
+        reply.status(400).send({
+          error: {
+            code: 'MISSING_TENANT',
+            message: 'x-tenant-id header is required',
+          },
+        })
+        return
+      }
+
+      const summary = await deps.orderRepository.getSummary(tenantId)
+      reply.status(200).send(summary)
     },
   )
 }

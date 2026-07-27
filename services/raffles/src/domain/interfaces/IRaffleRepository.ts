@@ -7,6 +7,9 @@ export type CreateRaffleDto = {
   prize: string
   imageUrl: string | null
   ticketPriceCents: number
+  maxTickets: number | null
+  drawDate: Date | null
+  lotteryGame: string
 }
 
 export type UpdateRaffleDto = Partial<{
@@ -15,6 +18,9 @@ export type UpdateRaffleDto = Partial<{
   prize: string
   imageUrl: string | null
   ticketPriceCents: number
+  maxTickets: number | null
+  drawDate: Date | null
+  lotteryGame: string
   status: RaffleStatus
   contestNumber: number
 }>

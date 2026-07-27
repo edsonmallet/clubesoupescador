@@ -1,7 +1,10 @@
 import { desc, eq, lte } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { Level } from '../../../domain/entities/level'
-import type { ILevelRepository } from '../../../domain/interfaces/ILevelRepository'
+import type {
+  ILevelRepository,
+  UpdateLevelDto,
+} from '../../../domain/interfaces/ILevelRepository'
 import type { schema } from '../schema'
 import { levels } from '../schema/subscriptions'
 
@@ -33,6 +36,20 @@ export class LevelRepository implements ILevelRepository {
       .limit(1)
 
     return row ? toDomain(row) : null
+  }
+
+  async update(id: string, data: UpdateLevelDto): Promise<Level> {
+    const [row] = await this.db
+      .update(levels)
+      .set({
+        ...data,
+        storeDiscountPct: data.storeDiscountPct?.toString(),
+        cashbackPct: data.cashbackPct?.toString(),
+      })
+      .where(eq(levels.id, id))
+      .returning()
+
+    return toDomain(row as LevelRow)
   }
 
   async findHighestForXp(totalXp: number): Promise<Level | null> {

@@ -15,6 +15,13 @@
       "when": 1785095800000,
       "tag": "0001_tenant_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785115869235,
+      "tag": "0002_purple_falcon",
+      "breakpoints": true
     }
   ]
 }

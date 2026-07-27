@@ -62,6 +62,7 @@ export class BuyTicketsUseCase {
       source: 'purchase',
       status: 'pending',
       asaasPaymentId,
+      maxTickets: raffle.maxTickets,
     })
 
     return { tickets, paymentUrl }

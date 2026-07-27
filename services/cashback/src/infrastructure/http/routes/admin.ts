@@ -1,6 +1,8 @@
 import type { FastifyInstance, preHandlerHookHandler } from 'fastify'
 import type { ICashbackConfigRepository } from '../../../domain/interfaces/ICashbackConfigRepository'
+import type { ICashbackRepository } from '../../../domain/interfaces/ICashbackRepository'
 import {
+  CashbackSummaryResponseSchema,
   ConfigItemSchema,
   ConfigListResponseSchema,
   ErrorResponseSchema,
@@ -11,6 +13,7 @@ export type AdminRouteDeps = {
   cashbackAuthPreHandler: preHandlerHookHandler
   requireOwner: preHandlerHookHandler
   configRepository: ICashbackConfigRepository
+  cashbackRepository: ICashbackRepository
 }
 
 function requireTenantId(headers: Record<string, unknown>): string | null {
@@ -95,6 +98,31 @@ export async function registerAdminRoutes(
         pct: updated.pct,
         expiryMonths: updated.expiryMonths,
       })
+    },
+  )
+
+  app.get(
+    '/summary',
+    {
+      preHandler: [deps.cashbackAuthPreHandler, deps.requireOwner],
+      schema: {
+        response: { 200: CashbackSummaryResponseSchema, 400: ErrorResponseSchema },
+      },
+    },
+    async (request, reply) => {
+      const tenantId = requireTenantId(request.headers)
+      if (!tenantId) {
+        reply.status(400).send({
+          error: {
+            code: 'MISSING_TENANT',
+            message: 'x-tenant-id header is required',
+          },
+        })
+        return
+      }
+
+      const summary = await deps.cashbackRepository.getSummary(tenantId)
+      reply.status(200).send(summary)
     },
   )
 }

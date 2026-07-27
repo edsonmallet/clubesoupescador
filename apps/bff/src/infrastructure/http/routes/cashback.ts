@@ -22,6 +22,7 @@ export type CashbackProxyDeps = {
   cashbackServiceUrl: string
   tenantAuthPreHandler: preHandlerHookHandler
   requireAuth: preHandlerHookHandler
+  requireOwner: preHandlerHookHandler
 }
 
 async function forward(
@@ -36,10 +37,13 @@ async function forward(
   const authorization = request.headers.authorization
   if (authorization) headers.authorization = authorization
 
-  const response = await fetch(`${deps.cashbackServiceUrl}${path}`, {
-    method: 'GET',
-    headers,
-  })
+  const init: RequestInit = { method: request.method, headers }
+  if (request.method !== 'GET' && request.body !== undefined) {
+    headers['content-type'] = 'application/json'
+    init.body = JSON.stringify(request.body)
+  }
+
+  const response = await fetch(`${deps.cashbackServiceUrl}${path}`, init)
   const body = await response.json()
   reply.status(response.status).send(body)
 }
@@ -70,6 +74,39 @@ export async function registerCashbackProxyRoutes(
         request.query as Record<string, string>,
       ).toString()
       await forward(request, reply, deps, `/history${query ? `?${query}` : ''}`)
+    },
+  )
+
+  app.get(
+    '/v1/admin/cashback-config',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/config')
+    },
+  )
+
+  app.patch(
+    '/v1/admin/cashback-config',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/config')
+    },
+  )
+
+  app.get(
+    '/v1/admin/cashback-summary',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/summary')
     },
   )
 }

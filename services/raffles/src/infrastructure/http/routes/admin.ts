@@ -1,5 +1,5 @@
 import type { FastifyInstance, preHandlerHookHandler } from 'fastify'
-import type { RaffleStatus } from '../../../domain/entities/Raffle'
+import type { Raffle, RaffleStatus } from '../../../domain/entities/Raffle'
 import { RaffleNotFoundError } from '../../../domain/errors'
 import type { IRaffleRepository } from '../../../domain/interfaces/IRaffleRepository'
 import type { CommunityClient } from '../../external/community/client'
@@ -29,6 +29,26 @@ export type AdminRouteDeps = {
 function requireTenantId(headers: Record<string, unknown>): string | null {
   const tenantId = headers['x-tenant-id']
   return typeof tenantId === 'string' ? tenantId : null
+}
+
+function toRaffleResponse(raffle: Raffle) {
+  return {
+    id: raffle.id,
+    title: raffle.title,
+    description: raffle.description,
+    prize: raffle.prize,
+    imageUrl: raffle.imageUrl,
+    ticketPriceCents: raffle.ticketPriceCents,
+    maxTickets: raffle.maxTickets,
+    drawDate: raffle.drawDate?.toISOString() ?? null,
+    lotteryGame: raffle.lotteryGame,
+    status: raffle.status,
+    contestNumber: raffle.contestNumber,
+    winnerTicket: raffle.winnerTicket,
+    winnerUid: raffle.winnerUid,
+    drawnAt: raffle.drawnAt?.toISOString() ?? null,
+    createdAt: raffle.createdAt.toISOString(),
+  }
 }
 
 export async function registerAdminRoutes(
@@ -62,11 +82,21 @@ export async function registerAdminRoutes(
         prize: string
         imageUrl: string | null
         ticketPriceCents: number
+        maxTickets: number | null
+        drawDate: string | null
+        lotteryGame?: string
       }
 
       const raffle = await deps.raffleRepository.create({
         tenantId,
-        ...body,
+        title: body.title,
+        description: body.description,
+        prize: body.prize,
+        imageUrl: body.imageUrl,
+        ticketPriceCents: body.ticketPriceCents,
+        maxTickets: body.maxTickets,
+        drawDate: body.drawDate ? new Date(body.drawDate) : null,
+        lotteryGame: body.lotteryGame ?? 'federal',
       })
 
       // Best-effort — the raffle already exists once created; a failed
@@ -85,20 +115,7 @@ export async function registerAdminRoutes(
         )
       }
 
-      reply.status(201).send({
-        id: raffle.id,
-        title: raffle.title,
-        description: raffle.description,
-        prize: raffle.prize,
-        imageUrl: raffle.imageUrl,
-        ticketPriceCents: raffle.ticketPriceCents,
-        status: raffle.status,
-        contestNumber: raffle.contestNumber,
-        winnerTicket: raffle.winnerTicket,
-        winnerUid: raffle.winnerUid,
-        drawnAt: raffle.drawnAt?.toISOString() ?? null,
-        createdAt: raffle.createdAt.toISOString(),
-      })
+      reply.status(201).send(toRaffleResponse(raffle))
     },
   )
 
@@ -137,25 +154,23 @@ export async function registerAdminRoutes(
         prize: string
         imageUrl: string | null
         ticketPriceCents: number
+        maxTickets: number | null
+        drawDate: string | null
+        lotteryGame: string
         status: RaffleStatus
       }>
 
-      const raffle = await deps.raffleRepository.update(id, body)
-
-      reply.status(200).send({
-        id: raffle.id,
-        title: raffle.title,
-        description: raffle.description,
-        prize: raffle.prize,
-        imageUrl: raffle.imageUrl,
-        ticketPriceCents: raffle.ticketPriceCents,
-        status: raffle.status,
-        contestNumber: raffle.contestNumber,
-        winnerTicket: raffle.winnerTicket,
-        winnerUid: raffle.winnerUid,
-        drawnAt: raffle.drawnAt?.toISOString() ?? null,
-        createdAt: raffle.createdAt.toISOString(),
+      const raffle = await deps.raffleRepository.update(id, {
+        ...body,
+        drawDate:
+          body.drawDate !== undefined
+            ? body.drawDate
+              ? new Date(body.drawDate)
+              : null
+            : undefined,
       })
+
+      reply.status(200).send(toRaffleResponse(raffle))
     },
   )
 

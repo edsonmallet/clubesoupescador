@@ -1,0 +1,1 @@
+ALTER TABLE "tenants"."domains" ADD COLUMN "last_error" text;

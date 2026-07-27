@@ -8,6 +8,10 @@ export type AllocateTicketsDto = {
   source: TicketSource
   status: TicketStatus
   asaasPaymentId: string | null
+  /** null means unlimited. Enforced inside the same locked transaction that
+   *  computes the next ticket number, so two concurrent requests can't both
+   *  succeed past the cap. */
+  maxTickets: number | null
 }
 
 export interface ITicketRepository {

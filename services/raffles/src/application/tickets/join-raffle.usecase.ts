@@ -82,6 +82,7 @@ export class JoinRaffleUseCase {
       source: 'subscription_conversion',
       status: 'confirmed',
       asaasPaymentId: null,
+      maxTickets: raffle.maxTickets,
     })
 
     await this.enqueueGrantXp({

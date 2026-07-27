@@ -42,6 +42,7 @@ export const env = createEnv({
     CASHBACK_SERVICE_URL: z.string().url().default('http://localhost:3007'),
     RAFFLES_SERVICE_URL: z.string().url().default('http://localhost:3008'),
     COMMUNITY_SERVICE_URL: z.string().url().default('http://localhost:3010'),
+    TOURNAMENTS_SERVICE_URL: z.string().url().default('http://localhost:3009'),
   },
   runtimeEnv: process.env,
 })

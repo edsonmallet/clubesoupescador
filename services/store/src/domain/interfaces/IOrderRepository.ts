@@ -23,8 +23,14 @@ export type CreateOrderDto = {
   address: OrderAddress
 }
 
+export type OrdersSummary = {
+  revenueCentsThisMonth: number
+  pendingOrders: number
+}
+
 export interface IOrderRepository {
   create(data: CreateOrderDto): Promise<Order>
+  getSummary(tenantId: string): Promise<OrdersSummary>
   findMany(
     tenantId: string,
     uid: string | null,

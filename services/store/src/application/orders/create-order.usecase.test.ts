@@ -31,6 +31,7 @@ function makeDeps() {
     update: vi.fn(),
   }
   const orderRepository = {
+    getSummary: vi.fn(),
     create: vi.fn().mockImplementation((data) =>
       Promise.resolve({
         id: 'order-1',

@@ -71,6 +71,7 @@ export const domains = tenantsSchema.table(
     type: domainTypeEnum('type').notNull(),
     verified: boolean('verified').notNull().default(false),
     verifiedAt: timestamp('verified_at', { withTimezone: true }),
+    lastError: text('last_error'),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
       .default(sql`now()`),

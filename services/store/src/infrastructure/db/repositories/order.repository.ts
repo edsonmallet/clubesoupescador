@@ -5,6 +5,7 @@ import { OutOfStockError } from '../../../domain/errors'
 import type {
   CreateOrderDto,
   IOrderRepository,
+  OrdersSummary,
 } from '../../../domain/interfaces/IOrderRepository'
 import type { PaginatedResult } from '../../../domain/interfaces/IProductRepository'
 import type { schema } from '../schema'
@@ -42,6 +43,25 @@ function toDomain(row: OrderRow, items: OrderItemRow[]): Order {
 
 export class OrderRepository implements IOrderRepository {
   constructor(private readonly db: NodePgDatabase<typeof schema>) {}
+
+  async getSummary(tenantId: string): Promise<OrdersSummary> {
+    const [[{ revenueCentsThisMonth }], [{ pendingOrders }]] = await Promise.all([
+      this.db
+        .select({
+          revenueCentsThisMonth: sql<number>`coalesce(sum(${orders.totalCents}), 0)::int`,
+        })
+        .from(orders)
+        .where(
+          sql`${orders.tenantId} = ${tenantId} and ${orders.status} = 'paid' and ${orders.createdAt} >= date_trunc('month', now())`,
+        ),
+      this.db
+        .select({ pendingOrders: sql<number>`count(*)::int` })
+        .from(orders)
+        .where(sql`${orders.tenantId} = ${tenantId} and ${orders.status} = 'paid'`),
+    ])
+
+    return { revenueCentsThisMonth, pendingOrders }
+  }
 
   /**
    * Creates the order, its line items, and decrements product stock in a

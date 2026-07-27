@@ -22,6 +22,7 @@ export type SubscriptionsProxyDeps = {
   subscriptionsServiceUrl: string
   tenantAuthPreHandler: preHandlerHookHandler
   requireAuth: preHandlerHookHandler
+  requireOwner: preHandlerHookHandler
 }
 
 async function forward(
@@ -112,6 +113,86 @@ export async function registerSubscriptionsProxyRoutes(
       })
       const body = await response.json()
       reply.status(response.status).send(body)
+    },
+  )
+
+  app.get(
+    '/v1/admin/members',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      const query = new URLSearchParams(request.query as Record<string, string>).toString()
+      await forward(request, reply, deps, `/admin/subscribers${query ? `?${query}` : ''}`)
+    },
+  )
+
+  app.patch(
+    '/v1/admin/members/:uid/role',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      const { uid } = request.params as { uid: string }
+      await forward(request, reply, deps, `/admin/subscribers/${uid}/role`)
+    },
+  )
+
+  app.get(
+    '/v1/admin/levels',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/admin/levels')
+    },
+  )
+
+  app.patch(
+    '/v1/admin/levels/:id',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+      await forward(request, reply, deps, `/admin/levels/${id}`)
+    },
+  )
+
+  app.get(
+    '/v1/admin/xp-config',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/admin/xp-config')
+    },
+  )
+
+  app.patch(
+    '/v1/admin/xp-config',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/admin/xp-config')
+    },
+  )
+
+  app.get(
+    '/v1/admin/subscriptions-summary',
+    {
+      preHandler: [deps.tenantAuthPreHandler, deps.requireOwner],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/admin/summary')
     },
   )
 }

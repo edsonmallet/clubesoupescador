@@ -21,6 +21,7 @@ function makeEntry(
 
 function makeDeps() {
   const cashbackRepository = {
+    getSummary: vi.fn(),
     credit: vi.fn(),
     debit: vi.fn(),
     getBalance: vi.fn(),

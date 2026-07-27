@@ -54,6 +54,7 @@ export class DrawRaffleUseCase {
     if (tickets.length === 0) throw new TicketsSoldOutError(raffle.id)
 
     const result = await this.loteriaFederalClient.getResult(
+      raffle.lotteryGame,
       input.contestNumber,
     )
 

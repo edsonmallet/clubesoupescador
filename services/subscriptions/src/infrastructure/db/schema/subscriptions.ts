@@ -86,3 +86,28 @@ export const xpEvents = subscriptionsSchema.table('xp_events', {
     .notNull()
     .default(sql`now()`),
 })
+
+// NOTE: not yet consumed by the XP-granting code paths across services
+// (store, cashback, raffles, community, subscriptions itself) — those still
+// award fixed constants matching CLAUDE.md's table. This gives the admin a
+// real place to persist per-source values; wiring every grant call site to
+// read from here is a separate, larger change.
+export const xpConfig = subscriptionsSchema.table(
+  'xp_config',
+  {
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: uuid('tenant_id').notNull(),
+    source: text('source').notNull(),
+    points: integer('points').notNull(),
+    dailyCap: integer('daily_cap'),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .default(sql`now()`),
+  },
+  (table) => ({
+    tenantSourceIdx: uniqueIndex('xp_config_tenant_source_idx').on(
+      table.tenantId,
+      table.source,
+    ),
+  }),
+)

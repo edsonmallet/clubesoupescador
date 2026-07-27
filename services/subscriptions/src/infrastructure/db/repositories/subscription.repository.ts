@@ -1,10 +1,11 @@
-import { and, eq } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { Subscription } from '../../../domain/entities/subscription'
 import type { SubscriptionStatus } from '../../../domain/entities/subscription'
 import type {
   CreateSubscriptionDto,
   ISubscriptionRepository,
+  PaginatedResult,
   UpdateAsaasDetailsDto,
 } from '../../../domain/interfaces/ISubscriptionRepository'
 import type { schema } from '../schema'
@@ -61,6 +62,33 @@ export class SubscriptionRepository implements ISubscriptionRepository {
       .limit(1)
 
     return row ? toDomain(row) : null
+  }
+
+  async findMany(
+    tenantId: string,
+    page: number,
+    perPage: number,
+    status?: SubscriptionStatus,
+  ): Promise<PaginatedResult<Subscription>> {
+    const conditions = [eq(subscribers.tenantId, tenantId)]
+    if (status) conditions.push(eq(subscribers.status, status))
+    const where = and(...conditions)
+
+    const [rows, [{ count }]] = await Promise.all([
+      this.db
+        .select()
+        .from(subscribers)
+        .where(where)
+        .orderBy(sql`${subscribers.createdAt} desc`)
+        .limit(perPage)
+        .offset((page - 1) * perPage),
+      this.db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(subscribers)
+        .where(where),
+    ])
+
+    return { items: rows.map(toDomain), total: count }
   }
 
   async create(data: CreateSubscriptionDto): Promise<Subscription> {

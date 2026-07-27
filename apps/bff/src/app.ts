@@ -6,9 +6,14 @@ import {
 } from '@clube/fastify-plugins'
 import Fastify, { type FastifyInstance } from 'fastify'
 import {
+  addDomainUseCase,
+  getLandingConfigUseCase,
   getMeUseCase,
+  listDomainsUseCase,
   registerUserUseCase,
   tenantAuthPreHandler,
+  updateLandingConfigUseCase,
+  verifyDomainUseCase,
 } from './infrastructure/http/container'
 import {
   requireAuth,
@@ -18,9 +23,11 @@ import {
 import { registerAuthRoutes } from './infrastructure/http/routes/auth'
 import { registerCashbackProxyRoutes } from './infrastructure/http/routes/cashback'
 import { registerCommunityProxyRoutes } from './infrastructure/http/routes/community'
+import { registerLandingRoutes } from './infrastructure/http/routes/landing'
 import { registerRafflesProxyRoutes } from './infrastructure/http/routes/raffles'
 import { registerStoreProxyRoutes } from './infrastructure/http/routes/store'
 import { registerSubscriptionsProxyRoutes } from './infrastructure/http/routes/subscriptions'
+import { registerTournamentsProxyRoutes } from './infrastructure/http/routes/tournaments'
 import { env } from './shared/env'
 
 export async function buildApp(
@@ -42,6 +49,7 @@ export async function buildApp(
     subscriptionsServiceUrl: env.SUBSCRIPTIONS_SERVICE_URL,
     tenantAuthPreHandler,
     requireAuth,
+    requireOwner,
   })
   await registerStoreProxyRoutes(app, {
     storeServiceUrl: env.STORE_SERVICE_URL,
@@ -54,6 +62,7 @@ export async function buildApp(
     cashbackServiceUrl: env.CASHBACK_SERVICE_URL,
     tenantAuthPreHandler,
     requireAuth,
+    requireOwner,
   })
   await registerRafflesProxyRoutes(app, {
     rafflesServiceUrl: env.RAFFLES_SERVICE_URL,
@@ -67,6 +76,21 @@ export async function buildApp(
     requireAuth,
     requireSubscriber,
     requireOwner,
+  })
+  await registerTournamentsProxyRoutes(app, {
+    tournamentsServiceUrl: env.TOURNAMENTS_SERVICE_URL,
+    tenantAuthPreHandler,
+    requireSubscriber,
+    requireOwner,
+  })
+  await registerLandingRoutes(app, {
+    tenantAuthPreHandler,
+    requireOwner,
+    getLandingConfigUseCase,
+    updateLandingConfigUseCase,
+    listDomainsUseCase,
+    addDomainUseCase,
+    verifyDomainUseCase,
   })
 
   return app

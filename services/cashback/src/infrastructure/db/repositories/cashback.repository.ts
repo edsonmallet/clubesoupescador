@@ -3,6 +3,7 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { CashbackEntry } from '../../../domain/entities/CashbackEntry'
 import type {
   CashbackBalance,
+  CashbackSummary,
   CreditCashbackDto,
   DebitCashbackDto,
   ICashbackRepository,
@@ -93,6 +94,25 @@ export class CashbackRepository implements ICashbackRepository {
       expiringSoonCents: expiringSoon,
       nextExpiryAt,
     }
+  }
+
+  async getSummary(tenantId: string): Promise<CashbackSummary> {
+    const [[{ totalGranted }], [{ totalRedeemed }]] = await Promise.all([
+      this.db
+        .select({
+          totalGranted: sql<number>`coalesce(sum(${ledger.amountCents}), 0)::int`,
+        })
+        .from(ledger)
+        .where(and(eq(ledger.tenantId, tenantId), gt(ledger.amountCents, 0))),
+      this.db
+        .select({
+          totalRedeemed: sql<number>`coalesce(sum(abs(${ledger.amountCents})), 0)::int`,
+        })
+        .from(ledger)
+        .where(and(eq(ledger.tenantId, tenantId), eq(ledger.type, 'redeemed'))),
+    ])
+
+    return { totalGrantedCents: totalGranted, totalRedeemedCents: totalRedeemed }
   }
 
   async getHistory(

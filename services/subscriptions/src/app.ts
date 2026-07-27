@@ -7,13 +7,17 @@ import {
 import Fastify, { type FastifyInstance } from 'fastify'
 import {
   createCheckoutUseCase,
+  dashboardRepository,
   enqueueProcessWebhook,
   levelRepository,
   listPlansUseCase,
   requireAuth,
+  requireOwner,
   subscriptionRepository,
   subscriptionsAuthPreHandler,
+  xpConfigRepository,
 } from './infrastructure/http/container'
+import { registerAdminRoutes } from './infrastructure/http/routes/admin'
 import { registerLevelsRoutes } from './infrastructure/http/routes/levels'
 import { registerPlansRoutes } from './infrastructure/http/routes/plans'
 import { registerSubscriptionsRoutes } from './infrastructure/http/routes/subscriptions'
@@ -37,6 +41,14 @@ export async function buildApp(
     subscriptionRepository,
   })
   await registerWebhookRoutes(app, { enqueueProcessWebhook })
+  await registerAdminRoutes(app, {
+    subscriptionsAuthPreHandler,
+    requireOwner,
+    subscriptionRepository,
+    levelRepository,
+    xpConfigRepository,
+    dashboardRepository,
+  })
 
   return app
 }

@@ -7,6 +7,7 @@ import {
 import Fastify, { type FastifyInstance } from 'fastify'
 import {
   cashbackAuthPreHandler,
+  cashbackRepository,
   configRepository,
   getBalanceUseCase,
   getHistoryUseCase,
@@ -43,6 +44,7 @@ export async function buildApp(
     cashbackAuthPreHandler,
     requireOwner,
     configRepository,
+    cashbackRepository,
   })
 
   return app

@@ -5,6 +5,6 @@
 // "0 tables" and produces no migration.
 export * from './subscriptions'
 
-import { levels, plans, subscribers, xpEvents } from './subscriptions'
+import { levels, plans, subscribers, xpConfig, xpEvents } from './subscriptions'
 
-export const schema = { levels, plans, subscribers, xpEvents }
+export const schema = { levels, plans, subscribers, xpEvents, xpConfig }

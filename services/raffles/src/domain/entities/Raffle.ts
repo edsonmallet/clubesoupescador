@@ -8,6 +8,9 @@ export type RaffleProps = {
   prize: string
   imageUrl: string | null
   ticketPriceCents: number
+  maxTickets: number | null
+  drawDate: Date | null
+  lotteryGame: string
   status: RaffleStatus
   contestNumber: number | null
   winnerTicket: number | null
@@ -49,6 +52,18 @@ export class Raffle {
 
   get ticketPriceCents(): number {
     return this.props.ticketPriceCents
+  }
+
+  get maxTickets(): number | null {
+    return this.props.maxTickets
+  }
+
+  get drawDate(): Date | null {
+    return this.props.drawDate
+  }
+
+  get lotteryGame(): string {
+    return this.props.lotteryGame
   }
 
   get status(): RaffleStatus {

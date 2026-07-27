@@ -3,6 +3,7 @@ import { GrantCashbackUseCase } from './grant-cashback.usecase'
 
 function makeDeps() {
   const cashbackRepository = {
+    getSummary: vi.fn(),
     credit: vi.fn(),
     debit: vi.fn(),
     getBalance: vi.fn(),

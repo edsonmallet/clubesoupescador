@@ -7,6 +7,9 @@ export const RaffleSchema = Type.Object({
   prize: Type.String(),
   imageUrl: Type.Union([Type.String(), Type.Null()]),
   ticketPriceCents: Type.Number(),
+  maxTickets: Type.Union([Type.Number(), Type.Null()]),
+  drawDate: Type.Union([Type.String(), Type.Null()]),
+  lotteryGame: Type.String(),
   status: Type.String(),
   contestNumber: Type.Union([Type.Number(), Type.Null()]),
   winnerTicket: Type.Union([Type.Number(), Type.Null()]),
@@ -34,6 +37,9 @@ export const CreateRaffleBodySchema = Type.Object({
   prize: Type.String({ minLength: 1 }),
   imageUrl: Type.Union([Type.String(), Type.Null()]),
   ticketPriceCents: Type.Number({ minimum: 1 }),
+  maxTickets: Type.Union([Type.Number({ minimum: 1 }), Type.Null()]),
+  drawDate: Type.Union([Type.String(), Type.Null()]),
+  lotteryGame: Type.Optional(Type.String({ minLength: 1 })),
 })
 
 export const UpdateRaffleBodySchema = Type.Partial(
@@ -43,6 +49,9 @@ export const UpdateRaffleBodySchema = Type.Partial(
     prize: Type.String(),
     imageUrl: Type.Union([Type.String(), Type.Null()]),
     ticketPriceCents: Type.Number({ minimum: 1 }),
+    maxTickets: Type.Union([Type.Number({ minimum: 1 }), Type.Null()]),
+    drawDate: Type.Union([Type.String(), Type.Null()]),
+    lotteryGame: Type.String(),
     status: Type.String(),
   }),
 )

@@ -19,6 +19,9 @@ function makeRaffle(
     prize: 'Combo de pesca',
     imageUrl: null,
     ticketPriceCents: 50, // R$0,50
+    maxTickets: null,
+    drawDate: null,
+    lotteryGame: 'federal',
     status: 'open',
     contestNumber: null,
     winnerTicket: null,

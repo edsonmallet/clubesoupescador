@@ -33,10 +33,16 @@ export type PaginatedResult<T> = {
   total: number
 }
 
+export type CashbackSummary = {
+  totalGrantedCents: number
+  totalRedeemedCents: number
+}
+
 export interface ICashbackRepository {
   credit(data: CreditCashbackDto): Promise<void>
   debit(data: DebitCashbackDto): Promise<void>
   getBalance(tenantId: string, uid: string): Promise<CashbackBalance>
+  getSummary(tenantId: string): Promise<CashbackSummary>
   getHistory(
     tenantId: string,
     uid: string,

@@ -19,6 +19,9 @@ function makeRaffle(
     prize: 'Combo de pesca',
     imageUrl: null,
     ticketPriceCents: 50,
+    maxTickets: null,
+    drawDate: null,
+    lotteryGame: 'federal',
     status: 'open',
     contestNumber: null,
     winnerTicket: null,
@@ -106,7 +109,7 @@ describe('DrawRaffleUseCase', () => {
       contestNumber: 5900,
     })
 
-    expect(deps.loteriaFederalClient.getResult).toHaveBeenCalledWith(5900)
+    expect(deps.loteriaFederalClient.getResult).toHaveBeenCalledWith('federal', 5900)
     expect([1, 2, 3]).toContain(result.winnerTicket)
     expect(result.contestNumber).toBe(5900)
   })

@@ -45,6 +45,7 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn().mockResolvedValue(null),
     }
     const subscriptionRepository = {
+      findMany: vi.fn(),
       findByUid: vi.fn(),
       findByAsaasSubscriptionId: vi.fn(),
       findById: vi.fn(),
@@ -83,6 +84,7 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn().mockResolvedValue(makePlan()),
     }
     const subscriptionRepository = {
+      findMany: vi.fn(),
       findByUid: vi
         .fn()
         .mockResolvedValue(makeSubscription({ status: 'active' })),
@@ -123,6 +125,7 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn().mockResolvedValue(makePlan()),
     }
     const subscriptionRepository = {
+      findMany: vi.fn(),
       findByUid: vi.fn().mockResolvedValue(null),
       findByAsaasSubscriptionId: vi.fn(),
       findById: vi.fn(),
@@ -191,6 +194,7 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn().mockResolvedValue(makePlan()),
     }
     const subscriptionRepository = {
+      findMany: vi.fn(),
       findByUid: vi.fn().mockResolvedValue(null),
       findByAsaasSubscriptionId: vi.fn(),
       findById: vi.fn(),
@@ -236,6 +240,7 @@ describe('CreateCheckoutUseCase', () => {
       findById: vi.fn().mockResolvedValue(makePlan()),
     }
     const subscriptionRepository = {
+      findMany: vi.fn(),
       findByUid: vi.fn().mockResolvedValue(null),
       findByAsaasSubscriptionId: vi.fn(),
       findById: vi.fn(),
@@ -278,6 +283,7 @@ describe('CreateCheckoutUseCase', () => {
         findById: vi.fn().mockResolvedValue(makePlan()),
       }
       const subscriptionRepository = {
+        findMany: vi.fn(),
         findByUid: vi.fn().mockResolvedValue(
           makeSubscription({
             status,

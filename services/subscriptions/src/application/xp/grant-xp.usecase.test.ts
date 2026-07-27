@@ -23,6 +23,7 @@ function makeSubscription(totalXp: number) {
 describe('GrantXpUseCase', () => {
   it('throws when the subscription does not exist', async () => {
     const subscriptionRepository = {
+      findMany: vi.fn(),
       findByUid: vi.fn(),
       findByAsaasSubscriptionId: vi.fn(),
       create: vi.fn(),
@@ -34,6 +35,7 @@ describe('GrantXpUseCase', () => {
     const levelRepository = {
       findAll: vi.fn(),
       findById: vi.fn(),
+      update: vi.fn(),
       findHighestForXp: vi.fn(),
     }
     const insertXpEvent = vi.fn()
@@ -73,6 +75,7 @@ describe('GrantXpUseCase', () => {
     const updated = makeSubscription(530)
 
     const subscriptionRepository = {
+      findMany: vi.fn(),
       findByUid: vi.fn(),
       findByAsaasSubscriptionId: vi.fn(),
       create: vi.fn(),
@@ -84,6 +87,7 @@ describe('GrantXpUseCase', () => {
     const levelRepository = {
       findAll: vi.fn(),
       findById: vi.fn(),
+      update: vi.fn(),
       findHighestForXp: vi.fn().mockResolvedValue(prata),
     }
     const insertXpEvent = vi.fn()

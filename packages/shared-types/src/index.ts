@@ -182,12 +182,30 @@ export type Raffle = {
   prize: string
   imageUrl: string | null
   ticketPriceCents: number
+  maxTickets: number | null
+  drawDate: string | null
+  lotteryGame: string
   status: RaffleStatus
   contestNumber: number | null
   winnerTicket: number | null
   winnerUid: string | null
   drawnAt: string | null
   createdAt: string
+}
+
+export type CreateRaffleInput = {
+  title: string
+  description: string
+  prize: string
+  imageUrl: string | null
+  ticketPriceCents: number
+  maxTickets: number | null
+  drawDate: string | null
+  lotteryGame?: string
+}
+
+export type UpdateRaffleInput = Partial<CreateRaffleInput> & {
+  status?: RaffleStatus
 }
 
 export type RaffleResult = {
@@ -276,4 +294,148 @@ export type ToggleVoteResponse = {
 
 export type ToggleReactionResponse = {
   added: boolean
+}
+
+export type Member = {
+  id: string
+  uid: string
+  planId: string
+  status: string
+  totalXp: number
+  levelId: string | null
+  createdAt: string
+}
+
+export type Level = {
+  id: string
+  name: string
+  minXp: number
+  storeDiscountPct: number
+  cashbackPct: number
+}
+
+export type UpdateLevelInput = Partial<{
+  name: string
+  minXp: number
+  storeDiscountPct: number
+  cashbackPct: number
+}>
+
+export type XpConfigItem = {
+  source: string
+  points: number
+  dailyCap: number | null
+}
+
+export type CashbackConfigItem = {
+  source: string
+  pct: number
+  expiryMonths: number
+}
+
+export type SubscriptionsSummary = {
+  activeMembers: number
+  monthlyRevenueCents: number
+  signupsByDay: Array<{ date: string; count: number }>
+}
+
+export type StoreSummary = {
+  revenueCentsThisMonth: number
+  pendingOrders: number
+}
+
+export type CashbackSummary = {
+  totalGrantedCents: number
+  totalRedeemedCents: number
+}
+
+export type TournamentStatus = 'open' | 'closed'
+
+export type Tournament = {
+  id: string
+  title: string
+  description: string
+  status: TournamentStatus
+  createdAt: string
+}
+
+export type CreateTournamentInput = {
+  title: string
+  description: string
+}
+
+export type Submission = {
+  id: string
+  tournamentId: string
+  authorUid: string
+  mediaUrl: string
+  voteScore: number
+  manualScore: number | null
+  createdAt: string
+}
+
+export type LandingTemplateId = 'clube-simples' | 'clube-premium'
+
+export type LandingTheme = {
+  primary?: string
+  secondary?: string
+  font?: string
+}
+
+export type LandingHeroSection = {
+  title?: string
+  subtitle?: string
+  bgImage?: string
+  ctaText?: string
+}
+
+export type LandingBenefitItem = {
+  icon: string
+  title: string
+  text: string
+}
+
+export type LandingBenefitsSection = {
+  items?: LandingBenefitItem[]
+}
+
+export type LandingPlanSection = {
+  price?: number
+  benefits?: string[]
+}
+
+export type LandingSeo = {
+  title?: string
+  description?: string
+  ogImage?: string
+}
+
+export type LandingSections = {
+  hero?: LandingHeroSection
+  benefits?: LandingBenefitsSection
+  plan?: LandingPlanSection
+}
+
+export type LandingConfig = {
+  templateId: LandingTemplateId
+  theme: LandingTheme
+  sections: LandingSections
+  seo: LandingSeo
+  published: boolean
+  publishedAt: string | null
+  updatedAt: string | null
+}
+
+export type UpdateLandingConfigInput = Partial<LandingConfig>
+
+export type DomainType = 'subdomain' | 'custom'
+
+export type Domain = {
+  id: string
+  domain: string
+  type: DomainType
+  verified: boolean
+  verifiedAt: string | null
+  lastError: string | null
+  createdAt: string
 }

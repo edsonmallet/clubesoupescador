@@ -4,6 +4,7 @@ import { DebitCashbackUseCase } from './debit-cashback.usecase'
 
 function makeDeps(availableCents: number) {
   const cashbackRepository = {
+    getSummary: vi.fn(),
     credit: vi.fn(),
     debit: vi.fn(),
     getBalance: vi.fn().mockResolvedValue({

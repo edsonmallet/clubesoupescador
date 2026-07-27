@@ -1,6 +1,7 @@
 import { and, eq, sql } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { Ticket } from '../../../domain/entities/Ticket'
+import { TicketsSoldOutError } from '../../../domain/errors'
 import type {
   AllocateTicketsDto,
   ITicketRepository,
@@ -45,6 +46,10 @@ export class TicketRepository implements ITicketRepository {
         .select({ max: sql<number>`coalesce(max(${tickets.number}), 0)::int` })
         .from(tickets)
         .where(eq(tickets.raffleId, data.raffleId))
+
+      if (data.maxTickets !== null && max + data.qty > data.maxTickets) {
+        throw new TicketsSoldOutError(data.raffleId)
+      }
 
       const values = Array.from({ length: data.qty }, (_, index) => ({
         tenantId: data.tenantId,
