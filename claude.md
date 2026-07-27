@@ -582,6 +582,7 @@ const nextConfig = {
 | clube-admin | Dockerfile.admin | admin.*.clube.com.br |
 | clube-super-admin | Dockerfile.super-admin | superadmin.clube.com.br |
 | clube-bff | Dockerfile.bff | api.clube.com.br |
+| clube-billing | Dockerfile.billing | interno |
 | clube-postgres | template Easypanel | interno |
 | clube-redis | template Easypanel | interno |
 
@@ -793,6 +794,10 @@ npm run test:e2e --filter=pwa
 cd services/[nome]
 npx drizzle-kit generate
 npx drizzle-kit migrate
+
+# Seed inicial — planos SaaS (services/billing), rodar após migrar em ambiente novo
+cd services/billing
+npm run seed:plans
 
 # Lint + typecheck
 npm run lint
