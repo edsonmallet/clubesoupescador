@@ -35,4 +35,24 @@ describe('ListPlansUseCase', () => {
     expect(result).toHaveLength(1)
     expect(result[0].id).toBe('plan-1')
   })
+
+  it('returns active and inactive plans when includeInactive is true', async () => {
+    const saasPlanRepository = {
+      list: vi
+        .fn()
+        .mockResolvedValue([
+          makePlan({ id: 'plan-1', active: true }),
+          makePlan({ id: 'plan-2', active: false }),
+        ]),
+      findById: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+    }
+
+    const usecase = new ListPlansUseCase(saasPlanRepository)
+    const result = await usecase.execute({ includeInactive: true })
+
+    expect(result).toHaveLength(2)
+    expect(result.map((plan) => plan.id)).toEqual(['plan-1', 'plan-2'])
+  })
 })

@@ -14,6 +14,15 @@ export function PlanTable({ onEdit }: PlanTableProps) {
   if (isLoading) return <p>Carregando planos...</p>
   if (isError) return <p>Erro ao carregar planos.</p>
 
+  if ((data ?? []).length === 0) {
+    return (
+      <p className="text-sm text-slate-600">
+        Nenhum plano cadastrado ainda. Use o botão &quot;Novo plano&quot;
+        acima para criar o primeiro plano SaaS.
+      </p>
+    )
+  }
+
   return (
     <table className="w-full border-collapse text-sm">
       <thead>

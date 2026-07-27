@@ -74,6 +74,17 @@ export async function registerBillingProxyRoutes(
     },
   )
 
+  app.get(
+    '/v1/billing/plans/all',
+    {
+      preHandler: [deps.superAuthPreHandler, deps.requireSuperAdmin],
+      schema: { response: ProxyResponseSchema },
+    },
+    async (request, reply) => {
+      await forward(request, reply, deps, '/plans/all')
+    },
+  )
+
   app.post(
     '/v1/billing/plans',
     {

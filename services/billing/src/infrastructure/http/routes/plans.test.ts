@@ -64,6 +64,64 @@ describe('plans routes', () => {
     ])
   })
 
+  it('GET /plans/all returns all plans (active and inactive) for super_admin', async () => {
+    const { app, deps } = await buildTestApp({
+      listPlansUseCase: {
+        execute: vi
+          .fn()
+          .mockResolvedValue([fakePlan(), fakePlan({ id: 'plan-2', active: false })]),
+      } as unknown as ListPlansUseCase,
+    })
+
+    const response = await app.inject({ method: 'GET', url: '/plans/all' })
+
+    expect(response.statusCode).toBe(200)
+    expect(deps.listPlansUseCase.execute).toHaveBeenCalledWith({
+      includeInactive: true,
+    })
+    expect(response.json()).toHaveLength(2)
+  })
+
+  it('GET /plans/all rejects non-super_admin callers with 403', async () => {
+    const { app, deps } = await buildTestApp({
+      requireSuperAdmin: async (
+        _request: FastifyRequest,
+        reply: FastifyReply,
+      ) => {
+        reply
+          .status(403)
+          .send({ error: { code: 'FORBIDDEN', message: 'Access denied' } })
+      },
+    })
+
+    const response = await app.inject({ method: 'GET', url: '/plans/all' })
+
+    expect(response.statusCode).toBe(403)
+    expect(deps.listPlansUseCase.execute).not.toHaveBeenCalled()
+  })
+
+  it('GET /plans/all rejects unauthenticated callers with 401', async () => {
+    const { app, deps } = await buildTestApp({
+      billingAuthPreHandler: async () => {},
+      requireSuperAdmin: async (
+        _request: FastifyRequest,
+        reply: FastifyReply,
+      ) => {
+        reply.status(401).send({
+          error: {
+            code: 'UNAUTHENTICATED',
+            message: 'Authentication required',
+          },
+        })
+      },
+    })
+
+    const response = await app.inject({ method: 'GET', url: '/plans/all' })
+
+    expect(response.statusCode).toBe(401)
+    expect(deps.listPlansUseCase.execute).not.toHaveBeenCalled()
+  })
+
   it('POST /plans creates a plan defaulting active to true when omitted', async () => {
     const { app, deps } = await buildTestApp()
 

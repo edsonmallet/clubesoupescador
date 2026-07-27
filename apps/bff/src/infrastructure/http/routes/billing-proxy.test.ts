@@ -139,4 +139,49 @@ describe('billing proxy routes', () => {
     )
     expect(response.statusCode).toBe(200)
   })
+
+  it('rejects GET /v1/billing/plans/all for non-super_admin callers with 403', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { app, deps } = buildTestApp()
+    await registerBillingProxyRoutes(app, deps)
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/billing/plans/all',
+    })
+
+    expect(response.statusCode).toBe(403)
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('forwards GET /v1/billing/plans/all for super_admin callers', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      status: 200,
+      json: async () => [
+        { id: 'plan-1', name: 'Basic', priceCents: 4900, active: false },
+      ],
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { app, deps } = buildTestApp({
+      superAuthPreHandler: async (request: FastifyRequest) => {
+        request.user = { uid: 'super-1', role: 'super_admin', tenant_id: null }
+      },
+      requireSuperAdmin: async () => {},
+    })
+    await registerBillingProxyRoutes(app, deps)
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/billing/plans/all',
+    })
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3011/plans/all',
+      expect.anything(),
+    )
+    expect(response.statusCode).toBe(200)
+  })
 })

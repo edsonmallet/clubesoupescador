@@ -46,6 +46,24 @@ export async function registerPlansRoutes(
     },
   )
 
+  // Super-admin management listing: includes inactive plans so deactivated
+  // plans stay visible/re-activatable in the super-admin CRUD. The public
+  // GET /plans above must keep returning active-only plans unchanged, since
+  // apps/admin's PlanPicker depends on that behavior.
+  app.get(
+    '/plans/all',
+    {
+      preHandler: [deps.billingAuthPreHandler, deps.requireSuperAdmin],
+      schema: { response: { 200: ListPlansResponseSchema } },
+    },
+    async (_request, reply) => {
+      const plans = await deps.listPlansUseCase.execute({
+        includeInactive: true,
+      })
+      reply.status(200).send(plans.map(serializePlan))
+    },
+  )
+
   app.post(
     '/plans',
     {
