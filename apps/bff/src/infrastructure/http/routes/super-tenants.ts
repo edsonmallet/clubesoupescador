@@ -125,6 +125,10 @@ export async function registerSuperTenantsRoutes(
       const { id } = request.params as { id: string }
       const user = request.user as AuthenticatedUser
       const result = await deps.impersonateTenantUseCase.execute(id, user.uid)
+      request.log.info(
+        { superAdminUid: user.uid, tenantId: id, ownerUid: result.ownerUid },
+        'tenant impersonation issued',
+      )
       reply.status(200).send(result)
     },
   )
