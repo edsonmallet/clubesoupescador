@@ -283,6 +283,43 @@ describe('CreateCheckoutUseCase', () => {
     expect(result).toEqual({ paymentUrl: null })
   })
 
+  it('returns a null paymentUrl when Asaas throws while fetching payments', async () => {
+    const saasPlanRepository = {
+      list: vi.fn(),
+      findById: vi.fn().mockResolvedValue(makePlan()),
+      create: vi.fn(),
+      update: vi.fn(),
+    }
+    const tenantBillingRepository = {
+      findByTenantId: vi.fn().mockResolvedValue(null),
+      findByAsaasSubscriptionId: vi.fn(),
+      create: vi.fn().mockResolvedValue(makeTenantBilling()),
+      updateStatus: vi.fn(),
+      updateAsaasDetails: vi.fn(),
+      list: vi.fn(),
+    }
+    const asaasClient = {
+      findCustomerByExternalReference: vi.fn().mockResolvedValue({ id: 'c1' }),
+      createCustomer: vi.fn(),
+      createSubscription: vi
+        .fn()
+        .mockResolvedValue({ id: 'asub_1', status: 'PENDING' }),
+      listPaymentsBySubscription: vi
+        .fn()
+        .mockRejectedValue(new Error('Asaas is down')),
+    }
+
+    const usecase = new CreateCheckoutUseCase(
+      tenantBillingRepository,
+      saasPlanRepository,
+      asaasClient as never,
+    )
+
+    const result = await usecase.execute(makeCheckoutInput())
+
+    expect(result).toEqual({ paymentUrl: null })
+  })
+
   it.each(['inactive', 'overdue', 'cancelled'] as const)(
     'updates the existing %s tenant billing row in place instead of inserting a duplicate',
     async (status) => {
