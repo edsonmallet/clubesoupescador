@@ -2,6 +2,7 @@ import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
 import { describe, expect, it, vi } from 'vitest'
 import { Tenant } from '../../../domain/entities/tenant'
 import { TenantNotFoundError } from '../../../domain/errors/tenant-not-found.error'
+import type { CreateSuperAdminUseCase } from '../../../application/super-tenants/create-super-admin.usecase'
 import type { CreateTenantUseCase } from '../../../application/super-tenants/create-tenant.usecase'
 import type { GetTenantUseCase } from '../../../application/super-tenants/get-tenant.usecase'
 import type { ImpersonateTenantUseCase } from '../../../application/super-tenants/impersonate-tenant.usecase'
@@ -48,6 +49,9 @@ async function buildTestApp(overrides: Partial<SuperTenantsRouteDeps> = {}) {
     impersonateTenantUseCase: {
       execute: vi.fn().mockResolvedValue({ token: 'tok', ownerUid: 'owner-1', slug: 'acme' }),
     } as unknown as ImpersonateTenantUseCase,
+    createSuperAdminUseCase: {
+      execute: vi.fn().mockResolvedValue(undefined),
+    } as unknown as CreateSuperAdminUseCase,
     ...overrides,
   }
   await registerSuperTenantsRoutes(app, deps)
@@ -114,6 +118,37 @@ describe('super-tenants routes', () => {
       'tenant-1',
       'super-admin-1',
     )
+  })
+
+  it('POST /v1/super/admins grants super_admin to the given uid', async () => {
+    const { app, deps } = await buildTestApp()
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/v1/super/admins',
+      payload: { uid: 'new-super-admin-uid' },
+    })
+
+    expect(response.statusCode).toBe(201)
+    expect(response.json()).toEqual({ uid: 'new-super-admin-uid', role: 'super_admin' })
+    expect(deps.createSuperAdminUseCase.execute).toHaveBeenCalledWith('new-super-admin-uid')
+  })
+
+  it('POST /v1/super/admins rejects non-super_admin callers', async () => {
+    const { app, deps } = await buildTestApp({
+      requireSuperAdmin: async (_request: FastifyRequest, reply: FastifyReply) => {
+        reply.status(403).send({ error: { code: 'FORBIDDEN', message: 'Access denied' } })
+      },
+    })
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/v1/super/admins',
+      payload: { uid: 'some-uid' },
+    })
+
+    expect(response.statusCode).toBe(403)
+    expect(deps.createSuperAdminUseCase.execute).not.toHaveBeenCalled()
   })
 
   it('rejects non-super_admin callers', async () => {

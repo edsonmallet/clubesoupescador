@@ -7,6 +7,7 @@ import {
 import Fastify, { type FastifyInstance } from 'fastify'
 import {
   addDomainUseCase,
+  createSuperAdminUseCase,
   createTenantUseCase,
   getLandingConfigUseCase,
   getMeUseCase,
@@ -108,6 +109,7 @@ export async function buildApp(
     createTenantUseCase,
     updateTenantStatusUseCase,
     impersonateTenantUseCase,
+    createSuperAdminUseCase,
   })
 
   return app

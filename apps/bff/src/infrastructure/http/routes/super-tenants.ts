@@ -1,11 +1,14 @@
 import type { AuthenticatedUser } from '@clube/fastify-plugins'
 import type { FastifyInstance, preHandlerHookHandler } from 'fastify'
+import type { CreateSuperAdminUseCase } from '../../../application/super-tenants/create-super-admin.usecase'
 import type { CreateTenantUseCase } from '../../../application/super-tenants/create-tenant.usecase'
 import type { GetTenantUseCase } from '../../../application/super-tenants/get-tenant.usecase'
 import type { ImpersonateTenantUseCase } from '../../../application/super-tenants/impersonate-tenant.usecase'
 import type { ListTenantsUseCase } from '../../../application/super-tenants/list-tenants.usecase'
 import type { UpdateTenantStatusUseCase } from '../../../application/super-tenants/update-tenant-status.usecase'
 import {
+  CreateSuperAdminBodySchema,
+  CreateSuperAdminResponseSchema,
   CreateTenantBodySchema,
   ErrorResponseSchema,
   ImpersonateResponseSchema,
@@ -45,6 +48,7 @@ export type SuperTenantsRouteDeps = {
   createTenantUseCase: CreateTenantUseCase
   updateTenantStatusUseCase: UpdateTenantStatusUseCase
   impersonateTenantUseCase: ImpersonateTenantUseCase
+  createSuperAdminUseCase: CreateSuperAdminUseCase
 }
 
 export async function registerSuperTenantsRoutes(
@@ -137,6 +141,27 @@ export async function registerSuperTenantsRoutes(
         'tenant impersonation issued',
       )
       reply.status(200).send(result)
+    },
+  )
+
+  app.post(
+    '/v1/super/admins',
+    {
+      preHandler,
+      schema: {
+        body: CreateSuperAdminBodySchema,
+        response: { 201: CreateSuperAdminResponseSchema },
+      },
+    },
+    async (request, reply) => {
+      const { uid } = request.body as { uid: string }
+      const actor = request.user as AuthenticatedUser
+      await deps.createSuperAdminUseCase.execute(uid)
+      request.log.info(
+        { grantedBy: actor.uid, uid },
+        'super_admin role granted',
+      )
+      reply.status(201).send({ uid, role: 'super_admin' })
     },
   )
 }

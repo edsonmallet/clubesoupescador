@@ -39,6 +39,15 @@ export const ImpersonateResponseSchema = Type.Object({
   slug: Type.String(),
 })
 
+export const CreateSuperAdminBodySchema = Type.Object({
+  uid: Type.String({ minLength: 1 }),
+})
+
+export const CreateSuperAdminResponseSchema = Type.Object({
+  uid: Type.String(),
+  role: Type.Literal('super_admin'),
+})
+
 export const ErrorResponseSchema = Type.Object({
   error: Type.Object({
     code: Type.String(),

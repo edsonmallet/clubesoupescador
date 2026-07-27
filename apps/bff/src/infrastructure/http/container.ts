@@ -2,6 +2,7 @@ import {
   createFirebaseAuthPreHandler,
   createTenantAuthPreHandler,
 } from '@clube/fastify-plugins'
+import { CreateSuperAdminUseCase } from '../../application/super-tenants/create-super-admin.usecase'
 import { CreateTenantUseCase } from '../../application/super-tenants/create-tenant.usecase'
 import { GetTenantUseCase } from '../../application/super-tenants/get-tenant.usecase'
 import { ImpersonateTenantUseCase } from '../../application/super-tenants/impersonate-tenant.usecase'
@@ -56,3 +57,4 @@ export const updateTenantStatusUseCase = new UpdateTenantStatusUseCase(
 export const impersonateTenantUseCase = new ImpersonateTenantUseCase(
   tenantRepository,
 )
+export const createSuperAdminUseCase = new CreateSuperAdminUseCase()
