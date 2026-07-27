@@ -27,6 +27,7 @@ describe('UpdateTenantStatusUseCase', () => {
       list: vi.fn(),
       findById: vi.fn().mockResolvedValue(fakeTenant('active')),
       updateStatus: vi.fn().mockResolvedValue(fakeTenant('suspended')),
+      updatePlan: vi.fn(),
       countUsers: vi.fn(),
     }
     const useCase = new UpdateTenantStatusUseCase(repository)
@@ -48,6 +49,7 @@ describe('UpdateTenantStatusUseCase', () => {
       list: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
       updateStatus: vi.fn(),
+      updatePlan: vi.fn(),
       countUsers: vi.fn(),
     }
     const useCase = new UpdateTenantStatusUseCase(repository)

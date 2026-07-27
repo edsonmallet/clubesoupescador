@@ -31,6 +31,7 @@ describe('ListTenantsUseCase', () => {
         ]),
       findById: vi.fn(),
       updateStatus: vi.fn(),
+      updatePlan: vi.fn(),
       countUsers: vi
         .fn()
         .mockImplementation((id: string) =>

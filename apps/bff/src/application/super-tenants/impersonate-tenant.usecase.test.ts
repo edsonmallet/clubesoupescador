@@ -43,6 +43,7 @@ describe('ImpersonateTenantUseCase', () => {
       list: vi.fn(),
       findById: vi.fn().mockResolvedValue(fakeTenant()),
       updateStatus: vi.fn(),
+      updatePlan: vi.fn(),
       countUsers: vi.fn(),
     }
     const useCase = new ImpersonateTenantUseCase(repository)
@@ -67,6 +68,7 @@ describe('ImpersonateTenantUseCase', () => {
       list: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
       updateStatus: vi.fn(),
+      updatePlan: vi.fn(),
       countUsers: vi.fn(),
     }
     const useCase = new ImpersonateTenantUseCase(repository)

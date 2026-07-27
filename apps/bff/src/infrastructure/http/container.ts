@@ -14,6 +14,7 @@ import { GetMeUseCase } from '../../application/tenants/get-me.usecase'
 import { ListDomainsUseCase } from '../../application/tenants/list-domains.usecase'
 import { RegisterUserUseCase } from '../../application/tenants/register-user.usecase'
 import { UpdateLandingConfigUseCase } from '../../application/tenants/update-landing-config.usecase'
+import { UpdateTenantBillingUseCase } from '../../application/tenants/update-tenant-billing.usecase'
 import { VerifyDomainUseCase } from '../../application/tenants/verify-domain.usecase'
 import { db } from '../db'
 import { DomainRepository } from '../db/repositories/domain.repository'
@@ -58,3 +59,7 @@ export const impersonateTenantUseCase = new ImpersonateTenantUseCase(
   tenantRepository,
 )
 export const createSuperAdminUseCase = new CreateSuperAdminUseCase()
+
+export const updateTenantBillingUseCase = new UpdateTenantBillingUseCase(
+  tenantRepository,
+)

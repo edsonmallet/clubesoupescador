@@ -89,6 +89,16 @@ export class TenantRepository implements ITenantRepository {
     return toDomain(row as TenantRow)
   }
 
+  async updatePlan(id: string, planId: string): Promise<Tenant> {
+    const [row] = await this.db
+      .update(tenants)
+      .set({ planId })
+      .where(eq(tenants.id, id))
+      .returning()
+
+    return toDomain(row as TenantRow)
+  }
+
   async countUsers(id: string): Promise<number> {
     const [row] = await this.db
       .select({ value: count() })

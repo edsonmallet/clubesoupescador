@@ -103,6 +103,17 @@ describe('TenantRepository', () => {
     expect(found?.status).toBe('suspended')
   })
 
+  it('updates tenant plan', async () => {
+    const created = await repository.create({ slug: 'to-upgrade', name: 'To Upgrade', ownerUid: 'owner-plan' })
+    const planId = '11111111-1111-1111-1111-111111111111'
+
+    const updated = await repository.updatePlan(created.id, planId)
+
+    expect(updated.planId).toBe(planId)
+    const found = await repository.findById(created.id)
+    expect(found?.planId).toBe(planId)
+  })
+
   it('counts users belonging to a tenant', async () => {
     const created = await repository.create({ slug: 'with-users', name: 'With Users', ownerUid: 'owner-cnt' })
     await db.insert(users).values([

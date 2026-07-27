@@ -19,6 +19,7 @@ import {
   superAuthPreHandler,
   tenantAuthPreHandler,
   updateLandingConfigUseCase,
+  updateTenantBillingUseCase,
   updateTenantStatusUseCase,
   verifyDomainUseCase,
 } from './infrastructure/http/container'
@@ -29,8 +30,10 @@ import {
   requireSuperAdmin,
 } from './infrastructure/http/proxy'
 import { registerAuthRoutes } from './infrastructure/http/routes/auth'
+import { registerBillingProxyRoutes } from './infrastructure/http/routes/billing-proxy'
 import { registerCashbackProxyRoutes } from './infrastructure/http/routes/cashback'
 import { registerCommunityProxyRoutes } from './infrastructure/http/routes/community'
+import { registerInternalRoutes } from './infrastructure/http/routes/internal'
 import { registerLandingRoutes } from './infrastructure/http/routes/landing'
 import { registerRafflesProxyRoutes } from './infrastructure/http/routes/raffles'
 import { registerStoreProxyRoutes } from './infrastructure/http/routes/store'
@@ -110,6 +113,15 @@ export async function buildApp(
     updateTenantStatusUseCase,
     impersonateTenantUseCase,
     createSuperAdminUseCase,
+  })
+  await registerInternalRoutes(app, {
+    updateTenantBillingUseCase,
+  })
+  await registerBillingProxyRoutes(app, {
+    billingServiceUrl: env.BILLING_SERVICE_URL,
+    superAuthPreHandler,
+    requireOwner,
+    requireSuperAdmin,
   })
 
   return app

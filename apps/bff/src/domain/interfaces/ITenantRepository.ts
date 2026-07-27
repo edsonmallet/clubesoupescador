@@ -16,5 +16,6 @@ export interface ITenantRepository {
   list(): Promise<Tenant[]>
   findById(id: string): Promise<Tenant | null>
   updateStatus(id: string, status: TenantStatus): Promise<Tenant>
+  updatePlan(id: string, planId: string): Promise<Tenant>
   countUsers(id: string): Promise<number>
 }

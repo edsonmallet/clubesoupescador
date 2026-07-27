@@ -36,6 +36,7 @@ describe('CreateTenantUseCase', () => {
       list: vi.fn(),
       findById: vi.fn(),
       updateStatus: vi.fn(),
+      updatePlan: vi.fn(),
       countUsers: vi.fn(),
     }
     const userRepository: IUserRepository = {
@@ -73,6 +74,7 @@ describe('CreateTenantUseCase', () => {
       list: vi.fn(),
       findById: vi.fn(),
       updateStatus: vi.fn(),
+      updatePlan: vi.fn(),
       countUsers: vi.fn(),
     }
     const userRepository: IUserRepository = {
