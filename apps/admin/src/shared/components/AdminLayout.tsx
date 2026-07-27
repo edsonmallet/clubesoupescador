@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { href: '/financeiro', label: 'Financeiro' },
   { href: '/landing', label: 'Landing' },
   { href: '/configuracoes', label: 'Configurações' },
+  { href: '/assinatura', label: 'Assinatura' },
 ]
 
 export function AdminLayout({ children }: { children: ReactNode }) {
@@ -25,7 +26,8 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       <aside className="flex w-56 flex-shrink-0 flex-col gap-1 border-r border-slate-200 p-4">
         <span className="mb-4 text-lg font-bold">Sou Pescador</span>
         {NAV_ITEMS.map((item) => {
-          const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
+          const active =
+            pathname === item.href || pathname.startsWith(`${item.href}/`)
           return (
             <Link
               key={item.href}
