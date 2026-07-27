@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { Tenant } from '../../../domain/entities/tenant'
 import type {
@@ -6,7 +6,7 @@ import type {
   ITenantRepository,
 } from '../../../domain/interfaces/ITenantRepository'
 import type { schema } from '../schema'
-import { domains, tenants } from '../schema/tenants'
+import { domains, tenants, users } from '../schema/tenants'
 
 type TenantRow = typeof tenants.$inferSelect
 
@@ -62,5 +62,39 @@ export class TenantRepository implements ITenantRepository {
       .returning()
 
     return toDomain(row as TenantRow)
+  }
+
+  async list(): Promise<Tenant[]> {
+    const rows = await this.db.select().from(tenants)
+    return rows.map(toDomain)
+  }
+
+  async findById(id: string): Promise<Tenant | null> {
+    const [row] = await this.db
+      .select()
+      .from(tenants)
+      .where(eq(tenants.id, id))
+      .limit(1)
+
+    return row ? toDomain(row) : null
+  }
+
+  async updateStatus(id: string, status: TenantRow['status']): Promise<Tenant> {
+    const [row] = await this.db
+      .update(tenants)
+      .set({ status })
+      .where(eq(tenants.id, id))
+      .returning()
+
+    return toDomain(row as TenantRow)
+  }
+
+  async countUsers(id: string): Promise<number> {
+    const [row] = await this.db
+      .select({ value: count() })
+      .from(users)
+      .where(eq(users.tenantId, id))
+
+    return row?.value ?? 0
   }
 }
