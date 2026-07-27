@@ -5,7 +5,8 @@ import { config } from 'dotenv'
 config({ path: resolve(__dirname, '../../../.env') })
 
 async function main(): Promise<void> {
-  const uid = process.argv[2]
+  const uid = process.argv[2] || "2Gd79838bUa7IiMhggLxbT8877d2"
+
 
   if (!uid) {
     console.error('Uso: npx tsx scripts/seed-super-admin.ts <uid>')
