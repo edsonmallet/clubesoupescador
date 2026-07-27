@@ -207,7 +207,11 @@ describe('CreateCheckoutUseCase', () => {
     expect(asaasClient.listPaymentsBySubscription).toHaveBeenCalledWith(
       'asub_1',
     )
-    expect(result).toEqual({ paymentUrl: 'https://pay.asaas.com/x' })
+    expect(result).toEqual({
+      id: 'tb-1',
+      status: 'inactive',
+      paymentUrl: 'https://pay.asaas.com/x',
+    })
   })
 
   it('reuses an existing Asaas customer instead of creating a duplicate', async () => {
@@ -282,7 +286,7 @@ describe('CreateCheckoutUseCase', () => {
 
     const result = await usecase.execute(makeCheckoutInput())
 
-    expect(result).toEqual({ paymentUrl: null })
+    expect(result).toEqual({ id: 'tb-1', status: 'inactive', paymentUrl: null })
   })
 
   it('returns a null paymentUrl when Asaas throws while fetching payments', async () => {
@@ -319,7 +323,7 @@ describe('CreateCheckoutUseCase', () => {
 
     const result = await usecase.execute(makeCheckoutInput())
 
-    expect(result).toEqual({ paymentUrl: null })
+    expect(result).toEqual({ id: 'tb-1', status: 'inactive', paymentUrl: null })
   })
 
   it.each(['inactive', 'overdue', 'cancelled'] as const)(
@@ -379,7 +383,11 @@ describe('CreateCheckoutUseCase', () => {
           status: 'inactive',
         },
       )
-      expect(result).toEqual({ paymentUrl: 'https://pay.asaas.com/new' })
+      expect(result).toEqual({
+        id: 'tb-1',
+        status: 'inactive',
+        paymentUrl: 'https://pay.asaas.com/new',
+      })
     },
   )
 })

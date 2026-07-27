@@ -30,7 +30,11 @@ export async function registerBillingRoutes(
       preHandler: [deps.billingAuthPreHandler, deps.requireOwner],
       schema: {
         body: CheckoutBodySchema,
-        response: { 200: CheckoutResponseSchema },
+        response: {
+          200: CheckoutResponseSchema,
+          404: ErrorResponseSchema,
+          409: ErrorResponseSchema,
+        },
       },
     },
     async (request, reply) => {
@@ -44,25 +48,15 @@ export async function registerBillingRoutes(
         cpfCnpj: string
       }
 
-      const { paymentUrl } = await deps.createCheckoutUseCase.execute({
-        tenantId,
-        planId,
-        name,
-        cpfCnpj,
-      })
+      const { id, status, paymentUrl } =
+        await deps.createCheckoutUseCase.execute({
+          tenantId,
+          planId,
+          name,
+          cpfCnpj,
+        })
 
-      // CreateCheckoutUseCase only returns `paymentUrl`; `id`/`status` are
-      // read back from the tenant_billing row the usecase just wrote so the
-      // response can match the brief's `{id, status, paymentUrl}` contract
-      // without changing the usecase's return type.
-      const tenantBilling =
-        await deps.tenantBillingRepository.findByTenantId(tenantId)
-
-      reply.status(200).send({
-        id: tenantBilling?.id ?? '',
-        status: tenantBilling?.status ?? 'inactive',
-        paymentUrl,
-      })
+      reply.status(200).send({ id, status, paymentUrl })
     },
   )
 

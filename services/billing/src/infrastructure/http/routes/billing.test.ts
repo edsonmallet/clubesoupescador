@@ -38,9 +38,11 @@ async function buildTestApp(overrides: Partial<BillingRouteDeps> = {}) {
     requireOwner: async () => {},
     requireSuperAdmin: async () => {},
     createCheckoutUseCase: {
-      execute: vi
-        .fn()
-        .mockResolvedValue({ paymentUrl: 'https://pay.asaas.com/x' }),
+      execute: vi.fn().mockResolvedValue({
+        id: 'tb-1',
+        status: 'inactive',
+        paymentUrl: 'https://pay.asaas.com/x',
+      }),
     } as unknown as CreateCheckoutUseCase,
     tenantBillingRepository: {
       findByTenantId: vi.fn().mockResolvedValue(fakeTenantBilling()),

@@ -1,4 +1,5 @@
 import type { AsaasClient } from '@clube/asaas-sdk'
+import type { TenantBillingStatus } from '../../domain/entities/tenant-billing'
 import {
   PlanNotFoundError,
   TenantBillingAlreadyActiveError,
@@ -19,6 +20,8 @@ export type CreateCheckoutInput = {
 }
 
 export type CreateCheckoutOutput = {
+  id: string
+  status: TenantBillingStatus
   paymentUrl: string | null
 }
 
@@ -74,24 +77,29 @@ export class CreateCheckoutUseCase {
     // A prior row exists (inactive/overdue/cancelled): update it in place.
     // Inserting again would violate the tenant_billing_tenant_idx unique
     // index and surface as a bare 500 to the caller.
-    if (existing) {
-      await this.tenantBillingRepository.updateAsaasDetails(existing.id, {
-        planId: input.planId,
-        asaasCustomerId: customerId,
-        asaasSubscriptionId: subscription.id,
-        status: 'inactive',
-      })
-    } else {
-      await this.tenantBillingRepository.create({
-        tenantId: input.tenantId,
-        planId: input.planId,
-        asaasCustomerId: customerId,
-        asaasSubscriptionId: subscription.id,
-        status: 'inactive',
-      })
-    }
+    // The write always returns the persisted row, so the route can build its
+    // `{id, status, paymentUrl}` response from this output directly — no
+    // extra read-back is needed (and no silent fallback if one were to fail).
+    const tenantBilling = existing
+      ? await this.tenantBillingRepository.updateAsaasDetails(existing.id, {
+          planId: input.planId,
+          asaasCustomerId: customerId,
+          asaasSubscriptionId: subscription.id,
+          status: 'inactive',
+        })
+      : await this.tenantBillingRepository.create({
+          tenantId: input.tenantId,
+          planId: input.planId,
+          asaasCustomerId: customerId,
+          asaasSubscriptionId: subscription.id,
+          status: 'inactive',
+        })
 
-    return { paymentUrl: await this.resolvePaymentUrl(subscription.id) }
+    return {
+      id: tenantBilling.id,
+      status: tenantBilling.status,
+      paymentUrl: await this.resolvePaymentUrl(subscription.id),
+    }
   }
 
   /**
