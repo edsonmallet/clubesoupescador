@@ -1,5 +1,5 @@
 import { resolve } from 'node:path'
-import type { createEnv as CreateEnvFn } from '@t3-oss/env-core/types'
+import type { createEnv as CreateEnvFn } from '@t3-oss/env-core/types' with { 'resolution-mode': 'import' }
 import { config } from 'dotenv'
 import { z } from 'zod'
 

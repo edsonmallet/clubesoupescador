@@ -11,7 +11,7 @@ describe('getFirebaseAdmin', () => {
     const fakeApp = { name: '[DEFAULT]' }
     getFirebaseApp.mockReturnValue(fakeApp)
 
-    const { getFirebaseAdmin } = await import('./admin')
+    const { getFirebaseAdmin } = await import('./admin.js')
     const app = getFirebaseAdmin()
 
     expect(app).toBe(fakeApp)
