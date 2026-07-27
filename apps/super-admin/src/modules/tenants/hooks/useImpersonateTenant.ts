@@ -5,9 +5,13 @@ import { tenantsService } from '../services/tenants.service'
 
 export function useImpersonateTenant(tenantId: string) {
   return useMutation({
-    mutationFn: () => tenantsService.impersonate(tenantId),
-    onSuccess: ({ token, slug }) => {
-      window.open(`https://admin.${slug}.clube.com.br/impersonate?token=${token}`, '_blank')
+    mutationFn: async () => {
+      const popup = window.open('', '_blank')
+      const result = await tenantsService.impersonate(tenantId)
+      if (popup) {
+        popup.location.href = `https://admin.${result.slug}.clube.com.br/impersonate?token=${result.token}`
+      }
+      return result
     },
   })
 }
