@@ -19,9 +19,9 @@ export function CashbackBalance() {
       : 0
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-slate-200 p-4">
+    <div className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 p-4">
       <div>
-        <span className="text-sm text-slate-500">Saldo disponível</span>
+        <span className="text-sm text-brand-ink/60">Saldo disponível</span>
         <p className="text-3xl font-bold text-emerald-700">
           {formatPrice(balance.availableCents)}
         </p>
@@ -29,7 +29,7 @@ export function CashbackBalance() {
 
       {balance.expiringSoonCents > 0 && (
         <div className="flex flex-col gap-1">
-          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-brand-sand/60">
             <div
               className="h-full rounded-full bg-amber-500"
               style={{ width: `${expiringPct}%` }}

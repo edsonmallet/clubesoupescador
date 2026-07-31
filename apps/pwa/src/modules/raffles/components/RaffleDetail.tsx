@@ -21,7 +21,7 @@ export function RaffleDetail({ raffleId }: { raffleId: string }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="aspect-video overflow-hidden rounded-lg bg-slate-100">
+      <div className="aspect-video overflow-hidden rounded-lg bg-brand-sand/60">
         {raffle.imageUrl && (
           <img
             src={raffle.imageUrl}
@@ -33,8 +33,8 @@ export function RaffleDetail({ raffleId }: { raffleId: string }) {
 
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold">{raffle.prize}</h1>
-        <p className="text-slate-600">{raffle.description}</p>
-        <span className="text-sm text-slate-500">
+        <p className="text-brand-ink/80">{raffle.description}</p>
+        <span className="text-sm text-brand-ink/60">
           Bilhete: {formatPrice(raffle.ticketPriceCents)}
         </span>
       </div>
@@ -42,7 +42,7 @@ export function RaffleDetail({ raffleId }: { raffleId: string }) {
       <RaffleResult raffleId={raffleId} />
 
       {raffle.status === 'open' && (
-        <div className="flex flex-col gap-3 rounded-md border border-slate-200 p-3">
+        <div className="flex flex-col gap-3 rounded-md border border-brand-ink/15 p-3">
           <Button
             onClick={() => joinRaffle.mutate()}
             disabled={joinRaffle.isPending}

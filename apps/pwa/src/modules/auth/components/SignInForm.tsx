@@ -53,7 +53,7 @@ export function SignInForm() {
         {mutation.isPending ? 'Entrando...' : 'Entrar'}
       </Button>
 
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-brand-ink/80">
         Não tem conta?{' '}
         <Link href="/cadastro" className="underline">
           Cadastre-se

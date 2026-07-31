@@ -34,18 +34,18 @@ export function VoteButtons({
         type="button"
         aria-label="Upvote"
         onClick={() => handleVote(1)}
-        className={`text-lg leading-none ${active === 1 ? 'text-orange-600' : 'text-slate-400 hover:text-slate-600'}`}
+        className={`text-lg leading-none ${active === 1 ? 'text-brand-rust' : 'text-brand-ink/40 hover:text-brand-ink/80'}`}
       >
         ▲
       </button>
-      <span className="text-sm font-semibold text-slate-700">
+      <span className="text-sm font-semibold text-brand-ink">
         {score + localDelta}
       </span>
       <button
         type="button"
         aria-label="Downvote"
         onClick={() => handleVote(-1)}
-        className={`text-lg leading-none ${active === -1 ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'}`}
+        className={`text-lg leading-none ${active === -1 ? 'text-brand-dark' : 'text-brand-ink/40 hover:text-brand-ink/80'}`}
       >
         ▼
       </button>

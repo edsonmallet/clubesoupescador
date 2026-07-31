@@ -49,7 +49,7 @@ export function OfferDetail({ offerId }: { offerId: string }) {
 
   return (
     <div className="grid gap-8 md:grid-cols-2">
-      <div className="aspect-square overflow-hidden rounded-lg bg-slate-100">
+      <div className="aspect-square overflow-hidden rounded-lg bg-brand-sand/60">
         {offer.images[0] && (
           <img
             src={offer.images[0]}
@@ -61,14 +61,14 @@ export function OfferDetail({ offerId }: { offerId: string }) {
 
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold">{offer.name}</h1>
-        <p className="text-slate-600">{offer.description}</p>
+        <p className="text-brand-ink/80">{offer.description}</p>
 
         <div className="flex flex-col gap-1">
-          <span className="text-sm text-slate-400 line-through">
+          <span className="text-sm text-brand-ink/40 line-through">
             {formatPrice(offer.priceFullCents)}
           </span>
           {isLocked ? (
-            <span className="text-lg font-semibold text-slate-500">
+            <span className="text-lg font-semibold text-brand-ink/60">
               🔒 Assine para ver o preço de clube
             </span>
           ) : (
@@ -78,7 +78,7 @@ export function OfferDetail({ offerId }: { offerId: string }) {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 rounded-md border border-slate-200 p-3">
+        <div className="flex flex-col gap-2 rounded-md border border-brand-ink/15 p-3">
           <span className="text-sm font-medium">Calcular frete</span>
           <div className="flex gap-2">
             <Input
@@ -93,7 +93,7 @@ export function OfferDetail({ offerId }: { offerId: string }) {
             />
           </div>
           {shippingQuote.isPending && (
-            <p className="text-sm text-slate-500">Calculando...</p>
+            <p className="text-sm text-brand-ink/60">Calculando...</p>
           )}
           {shippingQuote.data?.map((option) => (
             <div key={option.id} className="flex justify-between text-sm">
@@ -114,7 +114,7 @@ export function OfferDetail({ offerId }: { offerId: string }) {
                 address: data.address,
               }),
             )}
-            className="flex flex-col gap-3 rounded-md border border-slate-200 p-3"
+            className="flex flex-col gap-3 rounded-md border border-brand-ink/15 p-3"
           >
             <div className="flex flex-col gap-1">
               <label htmlFor="qty" className="text-sm font-medium">
@@ -132,7 +132,7 @@ export function OfferDetail({ offerId }: { offerId: string }) {
               <label htmlFor="cashback" className="text-sm font-medium">
                 Cashback a usar (R$)
               </label>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-brand-ink/60">
                 Disponível: {formatPrice(cashbackBalance?.availableCents ?? 0)}{' '}
                 · máx. neste pedido: {formatPrice(maxUsableCashbackCents)}
               </span>
@@ -149,7 +149,7 @@ export function OfferDetail({ offerId }: { offerId: string }) {
               />
             </div>
 
-            <div className="flex justify-between border-t border-slate-200 pt-2 text-sm">
+            <div className="flex justify-between border-t border-brand-ink/15 pt-2 text-sm">
               <span>Subtotal</span>
               <span>{formatPrice(subtotalCents)}</span>
             </div>

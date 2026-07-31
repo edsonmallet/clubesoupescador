@@ -12,7 +12,7 @@ export function CategoryList() {
     <nav className="flex flex-col gap-1">
       <Link
         href="/comunidade"
-        className="rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+        className="rounded-md px-3 py-2 text-sm font-medium text-brand-ink hover:bg-brand-sand/60"
       >
         Todas
       </Link>
@@ -20,7 +20,7 @@ export function CategoryList() {
         <Link
           key={category.id}
           href={`/comunidade/${category.slug}`}
-          className="rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
+          className="rounded-md px-3 py-2 text-sm text-brand-ink/80 hover:bg-brand-sand/60"
         >
           {category.name}
         </Link>

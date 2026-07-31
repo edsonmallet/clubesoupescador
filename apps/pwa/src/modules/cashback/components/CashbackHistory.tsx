@@ -31,7 +31,7 @@ export function CashbackHistory() {
   if (isLoading) return <p>Carregando extrato...</p>
 
   if (!data?.items.length) {
-    return <p className="text-slate-600">Nenhuma movimentação ainda.</p>
+    return <p className="text-brand-ink/80">Nenhuma movimentação ainda.</p>
   }
 
   return (
@@ -41,7 +41,7 @@ export function CashbackHistory() {
         return (
           <div
             key={entry.id}
-            className="flex items-center justify-between rounded-md border border-slate-100 p-3"
+            className="flex items-center justify-between rounded-md border border-brand-ink/10 p-3"
           >
             <div className="flex items-center gap-3">
               <span className="text-xl">{TYPE_ICON[entry.type]}</span>
@@ -49,7 +49,7 @@ export function CashbackHistory() {
                 <span className="text-sm font-medium">
                   {TYPE_LABEL[entry.type]}
                 </span>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-brand-ink/40">
                   {new Date(entry.createdAt).toLocaleDateString('pt-BR')}
                 </span>
               </div>
@@ -73,7 +73,7 @@ export function CashbackHistory() {
           type="button"
           disabled={page === 1}
           onClick={() => setPage((p) => Math.max(1, p - 1))}
-          className="text-sm text-slate-600 disabled:opacity-40"
+          className="text-sm text-brand-ink/80 disabled:opacity-40"
         >
           Anterior
         </button>
@@ -81,7 +81,7 @@ export function CashbackHistory() {
           type="button"
           disabled={page * 20 >= data.total}
           onClick={() => setPage((p) => p + 1)}
-          className="text-sm text-slate-600 disabled:opacity-40"
+          className="text-sm text-brand-ink/80 disabled:opacity-40"
         >
           Próxima
         </button>

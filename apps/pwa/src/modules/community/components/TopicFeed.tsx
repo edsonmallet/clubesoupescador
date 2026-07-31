@@ -21,7 +21,7 @@ export function TopicFeed({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2 border-b border-slate-200 pb-2">
+      <div className="flex gap-2 border-b border-brand-ink/15 pb-2">
         {TABS.map((tab) => (
           <button
             key={tab.value}
@@ -29,8 +29,8 @@ export function TopicFeed({
             onClick={() => setSort(tab.value)}
             className={`rounded-full px-3 py-1 text-sm font-medium ${
               sort === tab.value
-                ? 'bg-slate-900 text-white'
-                : 'text-slate-600 hover:bg-slate-100'
+                ? 'bg-brand-dark text-white'
+                : 'text-brand-ink/80 hover:bg-brand-sand/60'
             }`}
           >
             {tab.label}

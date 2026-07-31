@@ -12,9 +12,9 @@ export function OfferCard({ offer }: { offer: Offer }) {
   return (
     <Link
       href={`/clube/${offer.id}`}
-      className="flex flex-col gap-3 rounded-lg border border-slate-200 p-4 hover:border-slate-400"
+      className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 p-4 hover:border-brand-rust/60"
     >
-      <div className="aspect-square overflow-hidden rounded-md bg-slate-100">
+      <div className="aspect-square overflow-hidden rounded-md bg-brand-sand/60">
         {offer.images[0] && (
           <img
             src={offer.images[0]}
@@ -33,11 +33,11 @@ export function OfferCard({ offer }: { offer: Offer }) {
       )}
 
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-slate-400 line-through">
+        <span className="text-sm text-brand-ink/40 line-through">
           {formatPrice(offer.priceFullCents)}
         </span>
         {isLocked ? (
-          <span className="flex items-center gap-1 text-sm font-semibold text-slate-500">
+          <span className="flex items-center gap-1 text-sm font-semibold text-brand-ink/60">
             🔒 Assine para ver
           </span>
         ) : (

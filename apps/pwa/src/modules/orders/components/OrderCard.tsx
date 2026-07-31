@@ -13,12 +13,12 @@ const STATUS_LABEL: Record<Order['status'], string> = {
 
 export function OrderCard({ order }: { order: Order }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-slate-200 p-4">
+    <div className="flex flex-col gap-2 rounded-lg border border-brand-ink/15 p-4">
       <div className="flex items-center justify-between">
-        <span className="text-sm text-slate-500">
+        <span className="text-sm text-brand-ink/60">
           Pedido #{order.id.slice(0, 8)}
         </span>
-        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium">
+        <span className="rounded-full bg-brand-sand/60 px-2 py-0.5 text-xs font-medium">
           {STATUS_LABEL[order.status]}
         </span>
       </div>
@@ -26,12 +26,12 @@ export function OrderCard({ order }: { order: Order }) {
       <span className="text-lg font-bold">{formatPrice(order.totalCents)}</span>
 
       {order.trackingCode && (
-        <span className="text-sm text-slate-600">
+        <span className="text-sm text-brand-ink/80">
           Rastreio: {order.trackingCode}
         </span>
       )}
 
-      <span className="text-xs text-slate-400">
+      <span className="text-xs text-brand-ink/40">
         {new Date(order.createdAt).toLocaleDateString('pt-BR')}
       </span>
     </div>

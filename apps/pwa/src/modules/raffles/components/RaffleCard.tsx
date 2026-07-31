@@ -14,9 +14,9 @@ export function RaffleCard({ raffle }: { raffle: Raffle }) {
   return (
     <Link
       href={`/rifas/${raffle.id}`}
-      className="flex flex-col gap-3 rounded-lg border border-slate-200 p-4 hover:border-slate-400"
+      className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 p-4 hover:border-brand-rust/60"
     >
-      <div className="aspect-video overflow-hidden rounded-md bg-slate-100">
+      <div className="aspect-video overflow-hidden rounded-md bg-brand-sand/60">
         {raffle.imageUrl && (
           <img
             src={raffle.imageUrl}
@@ -27,10 +27,10 @@ export function RaffleCard({ raffle }: { raffle: Raffle }) {
       </div>
 
       <h3 className="text-sm font-semibold">{raffle.prize}</h3>
-      <span className="w-fit rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium">
+      <span className="w-fit rounded-full bg-brand-sand/60 px-2 py-0.5 text-xs font-medium">
         {STATUS_LABEL[raffle.status]}
       </span>
-      <span className="text-sm text-slate-600">
+      <span className="text-sm text-brand-ink/80">
         Bilhete: {formatPrice(raffle.ticketPriceCents)}
       </span>
     </Link>

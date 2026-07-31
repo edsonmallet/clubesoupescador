@@ -6,7 +6,7 @@ import { VoteButtons } from './VoteButtons'
 
 export function TopicCard({ topic }: { topic: Topic }) {
   return (
-    <div className="flex gap-3 rounded-lg border border-slate-200 p-3">
+    <div className="flex gap-3 rounded-lg border border-brand-ink/15 p-3">
       <VoteButtons
         targetType="topic"
         targetId={topic.id}
@@ -21,7 +21,7 @@ export function TopicCard({ topic }: { topic: Topic }) {
             </span>
           )}
           {topic.locked && (
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+            <span className="rounded-full bg-brand-sand/60 px-2 py-0.5 text-xs text-brand-ink/80">
               Trancado
             </span>
           )}
@@ -34,7 +34,7 @@ export function TopicCard({ topic }: { topic: Topic }) {
         >
           {topic.title}
         </Link>
-        <p className="line-clamp-2 text-sm text-slate-600">{topic.body}</p>
+        <p className="line-clamp-2 text-sm text-brand-ink/80">{topic.body}</p>
 
         <div className="mt-1 flex items-center justify-between">
           <ReactionBar
@@ -45,7 +45,7 @@ export function TopicCard({ topic }: { topic: Topic }) {
           />
           <Link
             href={`/comunidade/topico/${topic.id}`}
-            className="text-xs text-slate-500"
+            className="text-xs text-brand-ink/60"
           >
             {topic.commentCount} comentários
           </Link>

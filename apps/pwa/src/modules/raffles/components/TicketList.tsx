@@ -9,7 +9,7 @@ export function TicketList({ raffleId }: { raffleId: string }) {
 
   if (!tickets?.length) {
     return (
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-brand-ink/80">
         Você ainda não tem bilhetes nesta rifa.
       </p>
     )
@@ -27,7 +27,7 @@ export function TicketList({ raffleId }: { raffleId: string }) {
             className={`rounded-md border px-2 py-1 text-sm font-mono ${
               ticket.status === 'pending'
                 ? 'border-amber-300 text-amber-700'
-                : 'border-slate-300 text-slate-700'
+                : 'border-brand-ink/25 text-brand-ink'
             }`}
           >
             #{String(ticket.number).padStart(4, '0')}
