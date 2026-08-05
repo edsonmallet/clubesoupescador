@@ -1,5 +1,6 @@
 import { LockIcon } from '@/shared/components/icons'
 import type { Offer } from '@clube/shared-types'
+import { Badge } from '@clube/ui'
 import Link from 'next/link'
 import { formatPrice } from '../utils'
 
@@ -11,7 +12,7 @@ export function OfferCard({ offer }: { offer: Offer }) {
   return (
     <Link
       href={`/clube/${offer.id}`}
-      className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 bg-white p-4 hover:border-brand-rust/60"
+      className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 bg-white p-4 transition-colors duration-200 hover:border-brand-rust/60"
     >
       <div className="aspect-square overflow-hidden rounded-md bg-brand-sand/60">
         {offer.images[0] && (
@@ -28,9 +29,9 @@ export function OfferCard({ offer }: { offer: Offer }) {
       </h3>
 
       {offer.stock > 0 && offer.stock < LOW_STOCK_THRESHOLD && (
-        <span className="w-fit rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">
+        <Badge className="bg-amber-100 text-xs text-amber-800">
           Estoque limitado
-        </span>
+        </Badge>
       )}
 
       <div className="flex flex-col gap-1">

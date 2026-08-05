@@ -1,6 +1,6 @@
 'use client'
 
-import { Skeleton } from '@clube/ui'
+import { EmptyState, SkeletonList } from '@clube/ui'
 import { useOffers } from '../hooks/useOffers'
 import { OfferCard } from './OfferCard'
 
@@ -9,12 +9,11 @@ export function OfferGrid({ query = '' }: { query?: string }) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, index) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton count, no reordering
-          <Skeleton key={index} className="aspect-[3/4] w-full" />
-        ))}
-      </div>
+      <SkeletonList
+        count={8}
+        containerClassName="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+        itemClassName="aspect-[3/4] w-full"
+      />
     )
   }
 
@@ -25,15 +24,11 @@ export function OfferGrid({ query = '' }: { query?: string }) {
   )
 
   if (items.length === 0) {
-    return (
-      <p className="py-8 text-center text-sm text-brand-ink/60">
-        Nenhuma oferta encontrada.
-      </p>
-    )
+    return <EmptyState message="Nenhuma oferta encontrada." />
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    <div className="grid animate-fade-in grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       {items.map((offer) => (
         <OfferCard key={offer.id} offer={offer} />
       ))}

@@ -1,9 +1,7 @@
 'use client'
 
+import { formatPrice } from '@/shared/utils/format'
 import { useCashbackBalance } from '../hooks/useCashbackBalance'
-
-const formatPrice = (cents: number) =>
-  (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export function CashbackBalance() {
   const { data: balance, isLoading } = useCashbackBalance()

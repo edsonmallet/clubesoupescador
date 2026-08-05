@@ -1,7 +1,5 @@
+import { formatPrice } from '@/shared/utils/format'
 import type { Order } from '@clube/shared-types'
-
-const formatPrice = (cents: number) =>
-  (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 const STATUS_LABEL: Record<Order['status'], string> = {
   pending: 'Aguardando pagamento',

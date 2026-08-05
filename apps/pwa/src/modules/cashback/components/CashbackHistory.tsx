@@ -1,14 +1,9 @@
 'use client'
 
+import { formatPrice } from '@/shared/utils/format'
 import type { CashbackEntry } from '@clube/shared-types'
 import { useState } from 'react'
 import { useCashbackHistory } from '../hooks/useCashbackHistory'
-
-const formatPrice = (cents: number) =>
-  (Math.abs(cents) / 100).toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  })
 
 const TYPE_ICON: Record<CashbackEntry['type'], string> = {
   earned_purchase: '💰',
@@ -62,7 +57,7 @@ export function CashbackHistory() {
               }
             >
               {isCredit ? '+' : '-'}
-              {formatPrice(entry.amountCents)}
+              {formatPrice(Math.abs(entry.amountCents))}
             </span>
           </div>
         )

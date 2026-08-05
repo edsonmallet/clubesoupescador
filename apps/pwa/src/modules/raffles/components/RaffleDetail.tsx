@@ -1,7 +1,7 @@
 'use client'
 
+import { DetailBackHeader } from '@/shared/components/DetailBackHeader'
 import {
-  ArrowLeftIcon,
   CalendarIcon,
   ChevronDownIcon,
   ShareIcon,
@@ -10,7 +10,6 @@ import {
   UsersIcon,
 } from '@/shared/components/icons'
 import { Button } from '@clube/ui'
-import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { useBuyTickets } from '../hooks/useBuyTickets'
 import { useJoinRaffle } from '../hooks/useJoinRaffle'
@@ -28,7 +27,6 @@ const QUANTITY_SHORTCUTS = [
 ]
 
 export function RaffleDetail({ raffleId }: { raffleId: string }) {
-  const router = useRouter()
   const { data: raffle, isLoading } = useRaffle(raffleId)
   const { data: numbers } = useRaffleNumbers(raffleId)
   const joinRaffle = useJoinRaffle(raffleId)
@@ -83,22 +81,20 @@ export function RaffleDetail({ raffleId }: { raffleId: string }) {
   return (
     <div className="min-h-screen bg-brand-sand pb-32">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 md:px-8 lg:px-12">
-        <div className="flex items-center gap-3 pt-4">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label="Voltar"
-            className="text-brand-ink"
-          >
-            <ArrowLeftIcon width={22} height={22} />
-          </button>
-          <span className="flex-1 text-sm text-brand-ink/70">
-            Detalhes do sorteio
-          </span>
-          {/* TODO: usar Web Share API real quando fizer sentido */}
-          <button type="button" disabled aria-label="Compartilhar">
-            <ShareIcon width={20} height={20} className="text-brand-ink/40" />
-          </button>
+        <div className="pt-4">
+          <DetailBackHeader
+            title="Detalhes do sorteio"
+            trailing={
+              // TODO: usar Web Share API real quando fizer sentido
+              <button type="button" disabled aria-label="Compartilhar">
+                <ShareIcon
+                  width={20}
+                  height={20}
+                  className="text-brand-ink/40"
+                />
+              </button>
+            }
+          />
         </div>
 
         <button
@@ -215,7 +211,9 @@ export function RaffleDetail({ raffleId }: { raffleId: string }) {
             />
           </button>
           {aboutOpen && (
-            <p className="text-sm text-brand-ink/80">{raffle.description}</p>
+            <p className="animate-fade-in text-sm text-brand-ink/80">
+              {raffle.description}
+            </p>
           )}
         </div>
 
@@ -324,7 +322,7 @@ export function RaffleDetail({ raffleId }: { raffleId: string }) {
                   />
                 </button>
                 {summaryOpen && (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex animate-fade-in flex-wrap gap-1.5">
                     {selected
                       .sort((a, b) => a - b)
                       .map((n) => (

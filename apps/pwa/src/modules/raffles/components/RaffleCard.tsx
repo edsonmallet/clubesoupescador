@@ -1,5 +1,6 @@
 import { CalendarIcon, UsersIcon } from '@/shared/components/icons'
 import type { Raffle } from '@clube/shared-types'
+import { Badge } from '@clube/ui'
 import Link from 'next/link'
 import { daysUntil, formatPrice } from '../utils'
 
@@ -21,7 +22,7 @@ export function RaffleCard({ raffle }: { raffle: Raffle }) {
   return (
     <Link
       href={`/rifas/${raffle.id}`}
-      className="flex gap-3 rounded-lg border border-brand-ink/10 bg-white p-2 hover:border-brand-rust/50"
+      className="flex gap-3 rounded-lg border border-brand-ink/10 bg-white p-2 transition-colors duration-200 hover:border-brand-rust/50"
     >
       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-brand-sand/60">
         {raffle.imageUrl && (
@@ -34,11 +35,9 @@ export function RaffleCard({ raffle }: { raffle: Raffle }) {
       </div>
 
       <div className="flex flex-1 flex-col justify-center gap-1">
-        <span
-          className={`w-fit rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_CLASS[raffle.status]}`}
-        >
+        <Badge className={STATUS_CLASS[raffle.status]}>
           {STATUS_LABEL[raffle.status]}
-        </span>
+        </Badge>
         <h3 className="line-clamp-1 text-sm font-semibold text-brand-dark">
           {raffle.title}
         </h3>

@@ -1,6 +1,6 @@
 'use client'
 
-import { Skeleton } from '@clube/ui'
+import { EmptyState, SkeletonList } from '@clube/ui'
 import { useRaffles } from '../hooks/useRaffles'
 import { RaffleCard } from './RaffleCard'
 
@@ -9,12 +9,11 @@ export function RaffleGrid({ query = '' }: { query?: string }) {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-3">
-        {Array.from({ length: 4 }).map((_, index) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton count, no reordering
-          <Skeleton key={index} className="h-24 w-full rounded-lg" />
-        ))}
-      </div>
+      <SkeletonList
+        count={4}
+        containerClassName="flex flex-col gap-3"
+        itemClassName="h-24 w-full rounded-lg"
+      />
     )
   }
 
@@ -27,15 +26,11 @@ export function RaffleGrid({ query = '' }: { query?: string }) {
   )
 
   if (items.length === 0) {
-    return (
-      <p className="py-8 text-center text-sm text-brand-ink/60">
-        Nenhum sorteio encontrado.
-      </p>
-    )
+    return <EmptyState message="Nenhum sorteio encontrado." />
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex animate-fade-in flex-col gap-4">
       {items.map((raffle) => (
         <RaffleCard key={raffle.id} raffle={raffle} />
       ))}
