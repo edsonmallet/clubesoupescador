@@ -1,10 +1,9 @@
+import { LockIcon } from '@/shared/components/icons'
 import type { Offer } from '@clube/shared-types'
 import Link from 'next/link'
+import { formatPrice } from '../utils'
 
 const LOW_STOCK_THRESHOLD = 10
-
-const formatPrice = (cents: number) =>
-  (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export function OfferCard({ offer }: { offer: Offer }) {
   const isLocked = offer.priceClubCents === 0
@@ -12,7 +11,7 @@ export function OfferCard({ offer }: { offer: Offer }) {
   return (
     <Link
       href={`/clube/${offer.id}`}
-      className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 p-4 hover:border-brand-rust/60"
+      className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 bg-white p-4 hover:border-brand-rust/60"
     >
       <div className="aspect-square overflow-hidden rounded-md bg-brand-sand/60">
         {offer.images[0] && (
@@ -24,7 +23,9 @@ export function OfferCard({ offer }: { offer: Offer }) {
         )}
       </div>
 
-      <h3 className="line-clamp-2 text-sm font-medium">{offer.name}</h3>
+      <h3 className="line-clamp-2 text-sm font-medium text-brand-dark">
+        {offer.name}
+      </h3>
 
       {offer.stock > 0 && offer.stock < LOW_STOCK_THRESHOLD && (
         <span className="w-fit rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">
@@ -38,7 +39,8 @@ export function OfferCard({ offer }: { offer: Offer }) {
         </span>
         {isLocked ? (
           <span className="flex items-center gap-1 text-sm font-semibold text-brand-ink/60">
-            🔒 Assine para ver
+            <LockIcon width={14} height={14} />
+            Assine para ver
           </span>
         ) : (
           <span className="text-lg font-bold text-emerald-700">

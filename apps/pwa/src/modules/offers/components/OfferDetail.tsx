@@ -11,11 +11,9 @@ import {
   type BuyOfferFormInput,
   buyOfferSchema,
 } from '../schemas/address.schema'
+import { formatPrice } from '../utils'
 
 const CASHBACK_MAX_PCT_OF_ORDER = 0.3
-
-const formatPrice = (cents: number) =>
-  (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export function OfferDetail({ offerId }: { offerId: string }) {
   const { data: offer, isLoading } = useOffer(offerId)

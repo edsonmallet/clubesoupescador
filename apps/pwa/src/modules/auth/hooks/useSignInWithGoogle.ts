@@ -12,7 +12,7 @@ export function useSignInWithGoogle() {
     mutationFn: () =>
       signInWithPopup(getFirebaseAuth(), new GoogleAuthProvider()),
     onSuccess: () => {
-      router.push('/planos')
+      router.push('/clube')
     },
   })
 

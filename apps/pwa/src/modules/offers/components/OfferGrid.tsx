@@ -4,7 +4,7 @@ import { Skeleton } from '@clube/ui'
 import { useOffers } from '../hooks/useOffers'
 import { OfferCard } from './OfferCard'
 
-export function OfferGrid() {
+export function OfferGrid({ query = '' }: { query?: string }) {
   const { data, isLoading } = useOffers()
 
   if (isLoading) {
@@ -18,9 +18,23 @@ export function OfferGrid() {
     )
   }
 
+  const normalizedQuery = query.trim().toLowerCase()
+  const items = (data?.items ?? []).filter(
+    (offer) =>
+      !normalizedQuery || offer.name.toLowerCase().includes(normalizedQuery),
+  )
+
+  if (items.length === 0) {
+    return (
+      <p className="py-8 text-center text-sm text-brand-ink/60">
+        Nenhuma oferta encontrada.
+      </p>
+    )
+  }
+
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-      {data?.items.map((offer) => (
+      {items.map((offer) => (
         <OfferCard key={offer.id} offer={offer} />
       ))}
     </div>
