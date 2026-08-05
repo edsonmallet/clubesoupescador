@@ -64,14 +64,16 @@ export function Logo({
   }
 
   const px = BADGE_SIZES[size]
+  // logo-badge.png é 384x417 (recortado do transparente original)
+  const heightPx = Math.round(px * (417 / 384))
 
   return (
     <Image
       src="/logo-badge.png"
       alt="Anzol Club"
       width={px}
-      height={px}
-      className={cn('rounded-full', className)}
+      height={heightPx}
+      className={cn('drop-shadow-[0_6px_16px_rgba(0,0,0,0.45)]', className)}
       priority
     />
   )
