@@ -29,12 +29,12 @@ export function RaffleImageLightbox({
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/95">
+    <div className="fixed inset-0 z-50 animate-fade-in bg-black/95">
       <button
         type="button"
         onClick={onClose}
         aria-label="Fechar"
-        className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white"
+        className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
       >
         ✕
       </button>
@@ -49,8 +49,8 @@ export function RaffleImageLightbox({
           alt={alt}
           className={
             zoomed
-              ? 'w-[200%] max-w-none cursor-zoom-out'
-              : 'max-h-full max-w-full cursor-zoom-in object-contain'
+              ? 'w-[200%] max-w-none animate-scale-in cursor-zoom-out transition-all duration-300'
+              : 'max-h-full max-w-full animate-scale-in cursor-zoom-in object-contain transition-all duration-300'
           }
         />
       </div>
