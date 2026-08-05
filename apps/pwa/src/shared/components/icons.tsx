@@ -14,6 +14,15 @@ function base(props: SVGProps<SVGSVGElement>) {
   }
 }
 
+export function SearchIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.35-4.35" />
+    </svg>
+  )
+}
+
 export function MailIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg aria-hidden="true" {...base(props)}>
@@ -95,6 +104,87 @@ export function UserIcon(props: SVGProps<SVGSVGElement>) {
     <svg aria-hidden="true" {...base(props)}>
       <circle cx="12" cy="8" r="3.5" />
       <path d="M4.5 20c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5" />
+    </svg>
+  )
+}
+
+export function HomeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6 10v9h12v-9" />
+      <path d="M10 19v-5h4v5" />
+    </svg>
+  )
+}
+
+export function BellIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <path d="M6 10a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5Z" />
+      <path d="M10 19.5a2 2 0 0 0 4 0" />
+    </svg>
+  )
+}
+
+export function TrophyIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <path d="M7 4h10v5a5 5 0 0 1-10 0Z" />
+      <path d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10" />
+      <path d="M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10" />
+      <path d="M12 14v3" />
+      <path d="M9 20h6" />
+      <path d="M10 17h4v3h-4Z" />
+    </svg>
+  )
+}
+
+export function CalendarIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <rect x="3.5" y="5" width="17" height="15" rx="2" />
+      <path d="M3.5 9.5h17" />
+      <path d="M8 3v3.5" />
+      <path d="M16 3v3.5" />
+    </svg>
+  )
+}
+
+export function ShareIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <circle cx="18" cy="5.5" r="2.3" />
+      <circle cx="6" cy="12" r="2.3" />
+      <circle cx="18" cy="18.5" r="2.3" />
+      <path d="m8 10.8 8-4.2" />
+      <path d="m8 13.2 8 4.2" />
+    </svg>
+  )
+}
+
+export function ChevronDownIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  )
+}
+
+export function ArrowLeftIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <path d="M19 12H5" />
+      <path d="m11 18-6-6 6-6" />
+    </svg>
+  )
+}
+
+export function TicketIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg aria-hidden="true" {...base(props)}>
+      <path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z" />
+      <path d="M14 6v12" strokeDasharray="2 2" />
     </svg>
   )
 }
