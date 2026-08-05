@@ -1,6 +1,7 @@
 'use client'
 
-import { authService } from '@/modules/auth/services/auth.service'
+// TODO: descomentar import junto com a chamada a /v1/auth/me abaixo
+// import { authService } from '@/modules/auth/services/auth.service'
 import { getFirebaseAuth } from '@/shared/services/firebase'
 import { useAuthStore } from '@/shared/store/auth.store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -23,12 +24,15 @@ export function Providers({ children }: { children: ReactNode }) {
         }
 
         setLoading(true)
-        try {
-          const me = await authService.me()
-          setUser({ uid: me.uid, role: me.role, tenantId: me.tenantId })
-        } catch {
-          clear()
-        }
+        // TODO: descomentar chamada a /v1/auth/me quando o endpoint estiver disponível no BFF,
+        // e voltar a usar role/tenantId retornados por ele em vez do stub abaixo
+        // try {
+        //   const me = await authService.me()
+        //   setUser({ uid: me.uid, role: me.role, tenantId: me.tenantId })
+        // } catch {
+        //   clear()
+        // }
+        setUser({ uid: firebaseUser.uid, role: 'user', tenantId: null })
       },
     )
 
