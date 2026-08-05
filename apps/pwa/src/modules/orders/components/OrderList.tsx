@@ -9,7 +9,9 @@ export function OrderList() {
   if (isLoading) return <p>Carregando pedidos...</p>
 
   if (!data?.items.length) {
-    return <p className="text-slate-600">Você ainda não fez nenhum pedido.</p>
+    return (
+      <p className="text-brand-ink/80">Você ainda não fez nenhum pedido.</p>
+    )
   }
 
   return (

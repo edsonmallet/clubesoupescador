@@ -1,10 +1,10 @@
+import { LockIcon } from '@/shared/components/icons'
 import type { Offer } from '@clube/shared-types'
+import { Badge } from '@clube/ui'
 import Link from 'next/link'
+import { formatPrice } from '../utils'
 
 const LOW_STOCK_THRESHOLD = 10
-
-const formatPrice = (cents: number) =>
-  (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export function OfferCard({ offer }: { offer: Offer }) {
   const isLocked = offer.priceClubCents === 0
@@ -12,9 +12,9 @@ export function OfferCard({ offer }: { offer: Offer }) {
   return (
     <Link
       href={`/clube/${offer.id}`}
-      className="flex flex-col gap-3 rounded-lg border border-slate-200 p-4 hover:border-slate-400"
+      className="flex flex-col gap-3 rounded-lg border border-brand-ink/15 bg-white p-4 transition-colors duration-200 hover:border-brand-rust/60"
     >
-      <div className="aspect-square overflow-hidden rounded-md bg-slate-100">
+      <div className="aspect-square overflow-hidden rounded-md bg-brand-sand/60">
         {offer.images[0] && (
           <img
             src={offer.images[0]}
@@ -24,21 +24,24 @@ export function OfferCard({ offer }: { offer: Offer }) {
         )}
       </div>
 
-      <h3 className="line-clamp-2 text-sm font-medium">{offer.name}</h3>
+      <h3 className="line-clamp-2 text-sm font-medium text-brand-dark">
+        {offer.name}
+      </h3>
 
       {offer.stock > 0 && offer.stock < LOW_STOCK_THRESHOLD && (
-        <span className="w-fit rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">
+        <Badge className="bg-amber-100 text-xs text-amber-800">
           Estoque limitado
-        </span>
+        </Badge>
       )}
 
       <div className="flex flex-col gap-1">
-        <span className="text-sm text-slate-400 line-through">
+        <span className="text-sm text-brand-ink/40 line-through">
           {formatPrice(offer.priceFullCents)}
         </span>
         {isLocked ? (
-          <span className="flex items-center gap-1 text-sm font-semibold text-slate-500">
-            🔒 Assine para ver
+          <span className="flex items-center gap-1 text-sm font-semibold text-brand-ink/60">
+            <LockIcon width={14} height={14} />
+            Assine para ver
           </span>
         ) : (
           <span className="text-lg font-bold text-emerald-700">

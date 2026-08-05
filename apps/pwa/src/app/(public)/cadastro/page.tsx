@@ -6,7 +6,7 @@ export default function SignUpPage() {
     <main className="mx-auto flex max-w-sm flex-col gap-6 px-4 py-16">
       <h1 className="text-2xl font-bold">Criar conta</h1>
       <SignUpForm />
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-brand-ink/80">
         Já tem conta?{' '}
         <Link href="/entrar" className="underline">
           Entrar

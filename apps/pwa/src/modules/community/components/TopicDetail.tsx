@@ -38,7 +38,7 @@ export function TopicDetail({ topicId }: { topicId: string }) {
         <div className="flex flex-1 flex-col gap-2">
           <AuthorBadge authorUid={topic.authorUid} />
           <h1 className="text-xl font-bold">{topic.title}</h1>
-          <p className="whitespace-pre-wrap text-slate-700">{topic.body}</p>
+          <p className="whitespace-pre-wrap text-brand-ink">{topic.body}</p>
           <ReactionBar
             targetType="topic"
             targetId={topic.id}
@@ -63,7 +63,7 @@ export function TopicDetail({ topicId }: { topicId: string }) {
             value={body}
             onChange={(event) => setBody(event.target.value)}
             rows={3}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-md border border-brand-ink/25 px-3 py-2 text-sm"
             placeholder="Escreva um comentário..."
           />
           <Button type="submit" disabled={!body || createComment.isPending}>
@@ -71,7 +71,7 @@ export function TopicDetail({ topicId }: { topicId: string }) {
           </Button>
         </form>
       ) : (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-brand-ink/60">
           Tópico trancado — novos comentários desabilitados.
         </p>
       )}

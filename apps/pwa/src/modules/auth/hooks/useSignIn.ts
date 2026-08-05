@@ -16,7 +16,7 @@ export function useSignIn() {
     mutationFn: (data: SignInInput) =>
       signInWithEmailAndPassword(getFirebaseAuth(), data.email, data.password),
     onSuccess: () => {
-      router.push('/planos')
+      router.push('/clube')
     },
   })
 

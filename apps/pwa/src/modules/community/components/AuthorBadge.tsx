@@ -19,8 +19,8 @@ export function AuthorBadge({ authorUid }: { authorUid: string }) {
 
   if (isSelf && subscription) {
     return (
-      <span className="flex items-center gap-1 text-xs text-slate-500">
-        <span className="font-medium text-slate-700">{shortUid}</span>
+      <span className="flex items-center gap-1 text-xs text-brand-ink/60">
+        <span className="font-medium text-brand-ink">{shortUid}</span>
         <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-amber-800">
           {subscription.totalXp} XP
         </span>
@@ -28,5 +28,5 @@ export function AuthorBadge({ authorUid }: { authorUid: string }) {
     )
   }
 
-  return <span className="text-xs text-slate-500">{shortUid}</span>
+  return <span className="text-xs text-brand-ink/60">{shortUid}</span>
 }

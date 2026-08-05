@@ -1,12 +1,10 @@
 'use client'
 
+import { formatPrice } from '@/shared/utils/format'
 import type { Plan } from '@clube/shared-types'
 import { Button, Input } from '@clube/ui'
 import { useState } from 'react'
 import { useCheckout } from '../hooks/useCheckout'
-
-const formatPrice = (cents: number) =>
-  (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export function PlanCard({ plan }: { plan: Plan }) {
   const [name, setName] = useState('')
@@ -14,11 +12,11 @@ export function PlanCard({ plan }: { plan: Plan }) {
   const checkout = useCheckout()
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-slate-200 p-6">
+    <div className="flex flex-col gap-4 rounded-lg border border-brand-ink/15 p-6">
       <h3 className="text-lg font-semibold">{plan.name}</h3>
       <p className="text-2xl font-bold">
         {formatPrice(plan.priceCents)}
-        <span className="text-sm font-normal text-slate-600">/mês</span>
+        <span className="text-sm font-normal text-brand-ink/80">/mês</span>
       </p>
 
       <Input

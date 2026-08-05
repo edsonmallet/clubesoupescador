@@ -32,11 +32,11 @@ export function ReactionBar({
             className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs ${
               active
                 ? 'border-orange-400 bg-orange-50'
-                : 'border-slate-200 hover:border-slate-300'
+                : 'border-brand-ink/15 hover:border-brand-ink/25'
             }`}
           >
             <span>{emoji}</span>
-            {count > 0 && <span className="text-slate-600">{count}</span>}
+            {count > 0 && <span className="text-brand-ink/80">{count}</span>}
           </button>
         )
       })}

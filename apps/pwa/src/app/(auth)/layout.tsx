@@ -1,6 +1,8 @@
 'use client'
 
-import { useMySubscription } from '@/modules/subscriptions/hooks/useMySubscription'
+// TODO: descomentar import junto com a validação de assinatura ativa abaixo
+// import { useMySubscription } from '@/modules/subscriptions/hooks/useMySubscription'
+import { BottomNav } from '@/shared/components/BottomNav'
 import { useAuthStore } from '@/shared/store/auth.store'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useEffect } from 'react'
@@ -9,10 +11,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   const router = useRouter()
   const uid = useAuthStore((state) => state.uid)
   const isAuthLoading = useAuthStore((state) => state.isLoading)
-  const { data: subscription, isLoading: isSubscriptionLoading } =
-    useMySubscription({
-      enabled: !!uid,
-    })
+  // TODO: descomentar validação de assinatura ativa quando /v1/subscriptions/me estiver disponível
+  // const { data: subscription, isLoading: isSubscriptionLoading } =
+  //   useMySubscription({
+  //     enabled: !!uid,
+  //   })
 
   useEffect(() => {
     if (isAuthLoading) return
@@ -22,19 +25,21 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       return
     }
 
-    if (!isSubscriptionLoading && subscription?.status !== 'active') {
-      router.replace('/planos')
-    }
-  }, [uid, isAuthLoading, subscription, isSubscriptionLoading, router])
+    // TODO: descomentar validação de assinatura ativa quando /v1/subscriptions/me estiver disponível
+    // if (!isSubscriptionLoading && subscription?.status !== 'active') {
+    //   router.replace('/planos')
+    // }
+  }, [uid, isAuthLoading, router])
 
-  if (
-    isAuthLoading ||
-    !uid ||
-    isSubscriptionLoading ||
-    subscription?.status !== 'active'
-  ) {
+  // TODO: reincluir isSubscriptionLoading e subscription?.status !== 'active' na condição abaixo
+  if (isAuthLoading || !uid) {
     return null
   }
 
-  return <>{children}</>
+  return (
+    <>
+      <div className="pb-20">{children}</div>
+      <BottomNav />
+    </>
+  )
 }
